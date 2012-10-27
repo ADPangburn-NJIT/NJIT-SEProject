@@ -1,0 +1,144 @@
+@charset "utf-8";
+.styles {
+	background-color: #00FF66;
+}
+.content {
+	background-color: #CCCCCC;
+	height: 768px;
+	width: 1024px;
+	border: thin solid #FF0000;
+	margin: auto;
+}
+.content .header {
+	background-color: #CCCCCCC;
+	width: 1000px;
+	height: 90px;
+	background-position: center center;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 5px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	border-top-color: #000000;
+	border-right-color: #000000;
+	border-bottom-color: #000000;
+	border-left-color: #000000;
+}
+.content .header table {
+	width: 1000px;
+	height: 100px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	border-top-color: #F00;
+	border-right-color: #F00;
+	border-bottom-color: #F00;
+	border-left-color: #F00;
+}
+.logoCell {
+
+}
+.titleCell {
+	text-align: center;
+}
+.loginCell {
+	text-align: right;
+	width: 446px;
+	vertical-align: top;
+}
+.searchCell {
+	height: 20px;
+	text-align: center;
+	width: 1000px;
+}
+.sortByCategoriesCell {
+	height: 30px;
+	width: 200px;
+	text-align: center;
+	padding-top: 5px;
+}
+.content .suggestionsByCategory table tr .sortByCategoriesCell button {
+	height: 28px;
+	width: 140px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.content .suggestionsByCategory {
+	background-color: #CCCCFF;
+	height: 115px;
+	width: 1000px;
+	margin-right: auto;
+	margin-left: auto;
+	border: thin solid #000000;
+	text-align: center;
+	margin-bottom: 10px;
+}
+.createSuggestionButton {
+	width: 155px;
+	height: 30px;
+	margin-top: 3px;
+}
+
+
+
+.content .suggestionsByRoles {
+	background-color: #CCCCFF;
+	float: left;
+	height: 522px;
+	width: 150px;
+	margin-left: 11px;
+	border: thin solid #000000;
+}
+.content .suggestionPosts {
+	background-color: #CCCCCC;
+	float: right;
+	height: 522px;
+	width: 841px;
+	margin-right: 11px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	border-top-color: #000000;
+	border-right-color: #000000;
+	border-bottom-color: #000000;
+	border-left-color: #000000;
+}
+.content .footer {
+	background-color: #CCCCC;
+	height: 20px;
+	width: 1000px;
+	float: none;
+	margin-left: auto;
+	clear: both;
+	margin-right: auto;
+	border-top-width: thin;
+	border-right-width: thin;
+	border-bottom-width: thin;
+	border-left-width: thin;
+	border-top-color: #000000;
+	border-right-color: #000000;
+	border-bottom-color: #000000;
+	border-left-color: #000000;
+	text-align: center;
+}
+.sortByGroupCell {
+	width: 140px;
+}
+.content .suggestionsByRoles table tr .sortByGroupCell button {
+	width: 140px;
+	height: 35px;
+}
