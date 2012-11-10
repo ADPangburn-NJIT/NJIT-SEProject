@@ -39,12 +39,20 @@
                     <h1>iSuggest</h1>
               	</td>
                 <td class="loginCell">
+                <% if (user.getUserId() == null) { %>
                     <form name="loginForm" id="loginForm" method="post" action="login">
                         Email: <input type="text" name="emailAddr" id="emailAddr" size="15" maxlength="60" />
                         Password: <input type="password" name="password" id="password" size="10" maxlength="32" /><br />
                         <button type="button" onclick="showRegistrationBox();">Register</button>
                         <button type="submit">Login</button>                   
                     </form>
+                <% } 
+                else { %>
+                	Logged in as <%= user.getEmailAddr() %>.
+                	 <form name="logoutForm" id="logoutForm" method="post" action="logout">
+                        <button type="submit">Logout</button>                   
+                    </form>
+                <% } %>
                 </td>
             </tr>
         </table>

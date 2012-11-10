@@ -104,12 +104,12 @@ public class User {
 		rs = ps.executeQuery();
 		if (rs.next()) {
 			exists = true;
-			this.userId = rs.getString("userId");
-			this.emailAddr = rs.getString("emailAddr");
-			this.firstName = rs.getString("firstName");
-			this.lastName = rs.getString("lastName");
+			this.userId = rs.getString("user_id");
+			this.emailAddr = rs.getString("email_addr");
+			this.firstName = rs.getString("first_name");
+			this.lastName = rs.getString("last_name");
 			this.password = rs.getString("password");
-			this.userType = rs.getString("userType");
+			this.userType = rs.getString("user_type");
 		}
 		rs.close();
 		ps.close();			

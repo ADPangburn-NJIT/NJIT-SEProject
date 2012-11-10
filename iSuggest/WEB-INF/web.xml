@@ -31,6 +31,17 @@
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>Logout</servlet-name>
+    <description>Handles user Logout.</description>
+    <servlet-class>Servlets.Logout</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Logout</servlet-name>
+    <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+  
    <servlet>
     <servlet-name>Register</servlet-name>
     <description>Handles user registration.</description>
