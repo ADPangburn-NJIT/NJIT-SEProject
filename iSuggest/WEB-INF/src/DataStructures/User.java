@@ -88,14 +88,22 @@ public class User {
 
 	public void query() throws SQLException {
 		con = db.connectToDatabase();
+		if (this.emailAddr == null) {
+			errorMessage.add("Please enter valid email address.");		
+		}		
+		if (this.password == null) {
+			errorMessage.add("Please enter valid password.");
+		}
+		boolean exists = false;		
 		ps = con.prepareStatement(
 				"SELECT user_id, email_addr, first_name, last_name, password, user_type" +
 				" FROM user" +
-				" WHERE user_id=?" +
-				" ORDER BY CAST(user_id AS SIGNED) ASC");
-		ps.setString(1, this.userId);
+				" WHERE email_addr=? AND password=?");
+		ps.setString(1, this.emailAddr);
+		ps.setString(2, this.password);
 		rs = ps.executeQuery();
 		if (rs.next()) {
+			exists = true;
 			this.userId = rs.getString("userId");
 			this.emailAddr = rs.getString("emailAddr");
 			this.firstName = rs.getString("firstName");
@@ -104,11 +112,13 @@ public class User {
 			this.userType = rs.getString("userType");
 		}
 		rs.close();
-		ps.close();
-		
+		ps.close();			
 		if (con != null) {
 			con.close();
 		}
+		if (emailAddr != null && password != null && !exists) {
+			errorMessage.add("Email address or password isn't correct.  Please re-enter.");
+		}	
 	}
 
 	public String getUserId() {

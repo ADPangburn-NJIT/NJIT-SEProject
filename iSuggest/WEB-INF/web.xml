@@ -21,13 +21,13 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>Test</servlet-name>
-    <description>Handles everything thrown at it.</description>
-    <servlet-class>Servlets.Test</servlet-class>
+    <servlet-name>Login</servlet-name>
+    <description>Handles user Login.</description>
+    <servlet-class>Servlets.Login</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>Test</servlet-name>
+    <servlet-name>Login</servlet-name>
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
   

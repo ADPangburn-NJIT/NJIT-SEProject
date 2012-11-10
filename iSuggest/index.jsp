@@ -3,6 +3,7 @@
 <head>
 	<jsp:useBean id="generalMessage" class="java.util.ArrayList" scope="request"/>
 	<jsp:useBean id="errorMessage" class="java.util.ArrayList" scope="request"/>
+	<jsp:useBean id="user" class="DataStructures.User" scope="session"/>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>iSuggest</title>
@@ -36,11 +37,11 @@
                 </td>
                 <td class="titleCell">
                     <h1>iSuggest</h1>
-              </td>
+              	</td>
                 <td class="loginCell">
                     <form name="loginForm" id="loginForm" method="post" action="login">
-                        UserName: <input type="text" name="username" id="username" size="15" maxlength="40" />
-                        Password: <input type="password" name="password" id="password" size="10" maxlength="40" /><br />
+                        Email: <input type="text" name="emailAddr" id="emailAddr" size="15" maxlength="60" />
+                        Password: <input type="password" name="password" id="password" size="10" maxlength="32" /><br />
                         <button type="button" onclick="showRegistrationBox();">Register</button>
                         <button type="submit">Login</button>                   
                     </form>
