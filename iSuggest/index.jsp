@@ -13,20 +13,14 @@
 	<script type="text/javascript" src="js/jquery-ui-1.9.1.custom.js"></script>
 	<script>
 	
-	<!--
-		General Messages and Error Messages are responses sent from the system to the user.
-		The dialog boxes are hidden by default.
-		When the page is loaded it checks the request to see if there is a generalMessage or an errorMessage.
-		If they exist then we use jQuery to unhide the dialog and show it to the user.
-	-->
 	<% if (generalMessage.size() > 0) { %>
 			 $(function() {
-			        $( "#generalMessageDialog" ).dialog();
+			        $( "#generalMessageDialog" ).dialog({ height: 200, width: 450 });
 			 });
 	 <% } 
 	   else if (errorMessage.size() > 0) { %>
 		  	 $(function() {
-		        $( "#errorMessageDialog" ).dialog();
+		        $( "#errorMessageDialog" ).dialog({ height: 200, width: 350 });
 			 });
 	 <% } %>
     </script>

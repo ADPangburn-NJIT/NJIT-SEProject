@@ -34,10 +34,10 @@ public class User {
 		
 		//Error checking for if the user has left blank values in the registration form
 		if (this.emailAddr == null) {
-			this.errorMessage.add("E-mail address cannot be left blank");
+			this.errorMessage.add("E-mail address cannot be left blank.");
 		}
 		if (this.password == null) {
-			this.errorMessage.add("Password cannot be left blank");
+			this.errorMessage.add("Password cannot be left blank.");
 		}
 		
 		if (emailAddr != null && password != null) {

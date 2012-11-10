@@ -33,7 +33,6 @@ public class Register extends HttpServlet {
 		}
 		else {
 			generalMessage.add("Registration successful. You can now log in with your e-mail address and password.");
-			request.setAttribute("user", user);
 			request.setAttribute("generalMessage", generalMessage);
 		}
 		dispatcher.forward(request, response);
