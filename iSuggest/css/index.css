@@ -64,18 +64,6 @@
 	height: 28px;
 	width: 140px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 .content .suggestionsByCategory {
 	background-color: #CCCCFF;
 	height: 115px;
@@ -91,9 +79,6 @@
 	height: 30px;
 	margin-top: 3px;
 }
-
-
-
 .content .suggestionsByRoles {
 	background-color: #CCCCFF;
 	float: left;

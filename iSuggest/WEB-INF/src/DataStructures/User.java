@@ -4,15 +4,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import Utils.DatabaseUtils;
+import java.util.ArrayList;
+import java.util.List;
 
+import Utils.DatabaseUtils;
+import Utils.TextUtils;
 public class User {
+	
 	private String userId = null;
 	private String emailAddr = null;
 	private String firstName = null;
 	private String lastName = null;
-	private String passWd = null;
+	private String password = null;
 	private String userType = null;
+	
+	private List errorMessage = new ArrayList();
 	
 	PreparedStatement ps = null;
 	ResultSet rs = null;
@@ -21,42 +27,62 @@ public class User {
 	
 	public User() {}
 	
-	public boolean insert() throws SQLException {
+	public void insert() throws SQLException {
+		//Database connection stuff
 		con = db.connectToDatabase();
 		boolean exists = false;
 		
-		ps = con.prepareStatement(
-				"SELECT user_id" +
-				" FROM user" +
-				" WHERE user_id=?");
-		ps.setString(1, this.userId);
-		rs = ps.executeQuery();
-		if (rs.next()) {
-			exists = true;
+		//Error checking for if the user has left blank values in the registration form
+		if (this.emailAddr == null) {
+			this.errorMessage.add("E-mail address cannot be left blank");
 		}
-		rs.close();
-		ps.close();
+		if (this.password == null) {
+			this.errorMessage.add("Password cannot be left blank");
+		}
 		
-		if (!exists) {
+		if (emailAddr != null && password != null) {
+			//Check if the user id already exists for the entered user
 			ps = con.prepareStatement(
-					"INSERT INTO user (user_id, email_addr, first_name, last_name, password, user_type)" +
-					" VALUES (?, ?, ?, ?, ?)");
-			ps.setString(1, this.userId);
-			ps.setString(2, this.emailAddr);
-			ps.setString(3, this.firstName);
-			ps.setString(4, this.lastName);			
-			ps.setString(5, this.passWd);
-			ps.setString(6, this.userType);
-			ps.executeUpdate();
+					"SELECT user_id" +
+					" FROM user" +
+					" WHERE email_addr=?");
+			ps.setString(1, this.emailAddr);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				exists = true;
+				this.errorMessage.add("That e-mail address already has an account registered to it.");
+			}
+			rs.close();
 			ps.close();
 			
-			if (con != null) {
-				con.close();
+			if (!exists) {
+				int userId = 0;
+				ps = con.prepareStatement(
+						"SELECT MAX(user_id) AS user_id" +
+						" FROM user" +
+						" WHERE 1=1");
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					userId = rs.getInt("user_id") + 1;
+				}
+				rs.close();
+				ps.close();
+				
+				ps = con.prepareStatement(
+						"INSERT INTO user (user_id, email_addr, first_name, last_name, password, user_type)" +
+						" VALUES (?, ?, ?, ?, ?, ?)");
+				ps.setInt(1, userId);
+				ps.setString(2, this.emailAddr);
+				ps.setString(3, this.firstName);
+				ps.setString(4, this.lastName);			
+				ps.setString(5, this.password);
+				ps.setString(6, this.userType);
+				ps.executeUpdate();
+				ps.close();
 			}
-			return true;
 		}
-		else {
-			return false;
+		if (con != null) {
+			con.close();
 		}
 	}
 
@@ -74,11 +100,8 @@ public class User {
 			this.emailAddr = rs.getString("emailAddr");
 			this.firstName = rs.getString("firstName");
 			this.lastName = rs.getString("lastName");
-			this.emailAddr = rs.getString("passWd");
-			this.emailAddr = rs.getString("userType");
-			
-			
-			
+			this.password = rs.getString("password");
+			this.userType = rs.getString("userType");
 		}
 		rs.close();
 		ps.close();
@@ -92,80 +115,52 @@ public class User {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
 	public String getEmailAddr() {
 		return emailAddr;
-	}
-
-	public void setEmailAddr(String emailAddr) {
-		this.emailAddr = emailAddr;
 	}
 
 	public String getFirstName() {
 		return firstName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
 	public String getLastName() {
 		return lastName;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getPassWd() {
-		return passWd;
-	}
-
-	public void setPassWd(String passWd) {
-		this.passWd = passWd;
+	public String getPassword() {
+		return password;
 	}
 
 	public String getUserType() {
 		return userType;
 	}
 
+	public List getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = TextUtils.zeroToNull(userId);
+	}
+
+	public void setEmailAddr(String emailAddr) {
+		this.emailAddr = TextUtils.zeroToNull(emailAddr);
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = TextUtils.zeroToNull(firstName);
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = TextUtils.zeroToNull(lastName);
+	}
+
+	public void setPassword(String password) {
+		this.password = TextUtils.zeroToNull(password);
+	}
+
 	public void setUserType(String userType) {
-		this.userType = userType;
-	}
-
-	public PreparedStatement getPs() {
-		return ps;
-	}
-
-	public void setPs(PreparedStatement ps) {
-		this.ps = ps;
-	}
-
-	public ResultSet getRs() {
-		return rs;
-	}
-
-	public void setRs(ResultSet rs) {
-		this.rs = rs;
-	}
-
-	public Connection getCon() {
-		return con;
-	}
-
-	public void setCon(Connection con) {
-		this.con = con;
-	}
-
-	public DatabaseUtils getDb() {
-		return db;
-	}
-
-	public void setDb(DatabaseUtils db) {
-		this.db = db;
+		this.userType = TextUtils.zeroToNull(userType);
 	}
 }
 
