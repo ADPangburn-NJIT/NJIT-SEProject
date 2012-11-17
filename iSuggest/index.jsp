@@ -59,7 +59,7 @@
     </div>
 
     <div class="suggestionsByCategory"> 
-		<button class="createSuggestionButton" type="button">Create A Suggestion</button>       
+		<button class="createSuggestionButton" type="button" <% if (user.getUserId() == null) { %> disabled="disabled" <% } %>onclick="showCreateSuggestionDialog();">Create A Suggestion</button>       
         <table>
             <tr>
                 <td class="searchCell">
@@ -159,7 +159,7 @@
 				<td>Role</td>
 				<td>
 					<select id="userType" name="userType" onchange="verifyRole();">
-						<option value="1" selected="selected" >Undergrad</option>
+						<option value="1" selected="selected">Undergrad</option>
 						<option value="2">Graduate</option>
 						<option value="3">Alumni</option>
 						<option value="4">Staff</option>
@@ -194,6 +194,27 @@
 			</tr>
 		<% } %>
 	</table>
+</div>
+<div style="display:none;" id="createSuggestionDialog" title="Create Suggestion">
+	<form name="createSuggestionForm" id="createSuggestionForm" method="post" action="createSuggestion">
+		<table>
+			<tr>
+				<td>Title</td>
+				<td><input type="text" id="title" name="title" size="53" maxlength="60" /></td>
+			</tr>
+			<tr>
+				<td>Category</td>
+				<td><input type="text" id="category" name="category" size="53" maxlength="60" /></td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td><textarea name="description" id="description" rows="5" cols="51"></textarea></td>
+			</tr>
+			<tr align="center">
+				<td colspan="2"><button onclick="createSuggestion();">Create Suggestion</button></td>
+			</tr>
+		</table>
+	</form>
 </div>
 </body>
 </html>

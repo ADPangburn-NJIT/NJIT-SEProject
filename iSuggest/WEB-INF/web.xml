@@ -52,5 +52,16 @@
     <servlet-name>Register</servlet-name>
     <url-pattern>/register</url-pattern>
   </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>Create Suggestion</servlet-name>
+    <description>Handles the submission of suggestions.</description>
+    <servlet-class>Servlets.CreateSuggestion</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Create Suggestion</servlet-name>
+    <url-pattern>/createSuggestion</url-pattern>
+  </servlet-mapping>
 
 </web-app>

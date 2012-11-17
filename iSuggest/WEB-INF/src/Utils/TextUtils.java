@@ -17,7 +17,6 @@ public class TextUtils {
 		}
 		return s;
 	}
-	
 	/**
 	 * Gets the current date as a String in the default format
 	 * 
