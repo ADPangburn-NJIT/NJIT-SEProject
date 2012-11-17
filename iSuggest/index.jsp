@@ -16,12 +16,12 @@
 	
 	<% if (generalMessage.size() > 0) { %>
 			 $(function() {
-			        $( "#generalMessageDialog" ).dialog({ height: 200, width: 450 });
+			        $( "#generalMessageDialog" ).dialog({ height: 200, width: 450, modal:true });
 			 });
 	 <% } 
 	   else if (errorMessage.size() > 0) { %>
 		  	 $(function() {
-		        $( "#errorMessageDialog" ).dialog({ height: 200, width: 350 });
+		        $( "#errorMessageDialog" ).dialog({ height: 200, width: 350, modal:true });
 			 });
 	 <% } %>
     </script>
