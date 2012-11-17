@@ -156,6 +156,22 @@
 				<td><input type="text" name="lastName" id="lastName" size="30" maxlength="20" /></td>
 			</tr>
 			<tr>
+				<td>Role</td>
+				<td>
+					<select id="userType" name="userType" onchange="verifyRole();">
+						<option value="1" selected="selected" >Undergrad</option>
+						<option value="2">Graduate</option>
+						<option value="3">Alumni</option>
+						<option value="4">Staff</option>
+						<option value="5">Faculty</option>
+					</select>
+				</td>
+			</tr>
+			<tr id="hiddenRow" style="display:none;">
+				<td>Verification</td>
+				<td><input type="text" name="verification" id="verification" size="30" maxlength="20" value="Enter Empoyee ID" onclick="this.select()" /></td>
+			</tr>
+			<tr>
 				<td><button onclick="register();">Register</button></td>
 			</tr>
 		</table>
