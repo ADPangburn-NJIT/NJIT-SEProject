@@ -11,12 +11,20 @@ public class TextUtils {
 	public static final String defaultTimeFormat = "HH:mm";
 	public TextUtils() {}
 	
-	public static String zeroToNull(String s) {
+	public static String nullToZero(String s) {
 		if ("".equals(s)) {
 			s = null;
 		}
 		return s;
 	}
+	
+	public static String zeroToNull(String s) {
+		if (s == null) {
+			s = "";
+		}
+		return s;
+	}
+	
 	/**
 	 * Gets the current date as a String in the default format
 	 * 

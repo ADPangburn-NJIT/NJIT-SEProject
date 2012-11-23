@@ -1,16 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<jsp:useBean id="generalMessage" class="java.util.ArrayList" scope="request"/>
-	<jsp:useBean id="errorMessage" class="java.util.ArrayList" scope="request"/>
-	<jsp:useBean id="user" class="DataStructures.User" scope="session"/>
-	<jsp:useBean id="post" class="DataStructures.Post" scope="page"/>
 	<%@ page import="Utils.TextUtils" %>
 	<%@ page import="java.util.ArrayList" %>
 	<%@ page import="DataStructures.Post" %>
+	<%@ page import="DataStructures.User" %>
+	<%@ page import="DataStructures.Comments" %>
+	
+	<jsp:useBean id="generalMessage" class="java.util.ArrayList" scope="request"/>
+	<jsp:useBean id="errorMessage" class="java.util.ArrayList" scope="request"/>
+	<jsp:useBean id="user" class="DataStructures.User" scope="session"/>
+	<jsp:useBean id="comments" class="DataStructures.Comments" scope="page"/>
+	
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>iSuggest</title>
-	<link href="css/index.css" rel="stylesheet" type="text/css" />
+	<link href="css/postDetails.css" rel="stylesheet" type="text/css" />
 	<link href="css/redmond/jquery-ui-1.9.1.custom.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="js/index.js"></script>
 	<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
@@ -31,10 +35,9 @@
 </head>
 
 <% 
-	ArrayList activePosts = new ArrayList();
-	activePosts = post.getActiveSuggestions(1);
-	if (request.getParameter("page") != null) { 
-		activePosts = post.getActiveSuggestions(Integer.parseInt(request.getParameter("page")));
+	ArrayList activeComments = new ArrayList();
+	if (request.getParameter("postId") != null) { 
+		activeComments = comments.getActiveComments(Integer.parseInt(request.getParameter("postId")));
 	}
 %>
 <body>
@@ -99,59 +102,37 @@
             </tr>
         </table>
     </div>
-    
-    <div class="suggestionsByRoles">
-        <h3 style="font-size:15px; text-align:center;">Sort by Group</h3>
-        <table>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">All</button>
+
+   <div class="suggestionPosts">
+   		<table class="suggestionPostsTable">
+        	<tr>
+            	<td>
+                	<h2 class="suggestionPostsHeader"><%= comments.getPost().getTitle() %></h2>
                 </td>
             </tr>
             <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">Undergrads</button>
+            	<td>
+                	 <h2 class="commentDescription"><%= comments.getPost().getDescription() %></h2>
                 </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">Grad</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">Alumni</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">Faculty</button>
-                </td>
-            </tr>
+                
+           	</tr>
         </table>
     </div>
-    
-   <div class="suggestionPosts">
-    	<h1 class="suggestionPostsHeader">Newest Suggestions</h1>
-    	<% for (int i = 0; i < activePosts.size(); i++) { 
-    		Post displayPost = (Post)activePosts.get(i);
-    	%>
-    		
-	        <table class="suggestionPostsTable">
-	        	<tr>
-	            	<td class="suggestionPostsDataCell" style="text-align:left"><%= TextUtils.zeroToNull(displayPost.getUser().getUserType()) %></td>
-	                <td class="suggestionPostsDataCell" style="text-align:left"></td>
-	                <td class="suggestionPostsDataCell" style="text-align:right"><%= TextUtils.zeroToNull(displayPost.getUser().getFirstName()) %></td>
-	            </tr>
-	        	<tr>
-	            	 <td class="suggestionPostsDataCell" style="text-align:left"><%= displayPost.getThumbsUp() %></td>
-	            	<td class="suggestionPostsTitleCell" style="text-align:center"><a href="postDetails.jsp?postId=<%= TextUtils.zeroToNull(displayPost.getPostId()) %>"><%= TextUtils.zeroToNull(displayPost.getTitle()) %></a></td>
-	                <td class="suggestionPostsDataCell" style="text-align:right"><%= displayPost.getThumbsDown() %></td>
-	            </tr>
-	        </table>
-		<% } %>
+    <div class="leaveComment">
+    	<button type="button"  <% if (user.getUserId() == null) { %> disabled="disabled" <% } %> onclick="showLeaveCommentBox();">Leave Comment</button>
     </div>
-    
+    <div class="commentsSection">
+   		<table>
+        	<% for (int i = 0; i < activeComments.size(); i++) {
+        		Comments comment = (Comments)activeComments.get(i);
+        	%>
+        		<tr>
+        			<td><%= comment.getCommentText() %></td>
+        			<td><%= comment.getUser().getFirstName() + " " + comment.getUser().getLastName() %></td>
+        		</tr>
+        	<% } %>
+        </table>
+    </div>
     <div class="footer">iSuggest System - 2012</div>
 </div>
 
@@ -231,6 +212,23 @@
 			</tr>
 			<tr align="center">
 				<td colspan="2"><button onclick="createSuggestion();">Create Suggestion</button></td>
+			</tr>
+		</table>
+	</form>
+</div>
+<div style="display:none;" id="leaveCommentDialog" title="Leave Comment">
+	<form name="leaveCommentForm" id="leaveCommentForm" method="post" action="leaveComment">
+		<input type="hidden" name="postId" id="postId" value="<%= request.getParameter("postId") %>" />
+		<table>
+			<tr>
+				<td>
+					Comment: <br />
+					150 Character Max
+				</td>
+				<td><textarea name="commentText" id="commentText" rows="5" cols="51"></textarea></td>
+			</tr>
+			<tr align="center">
+				<td colspan="2"><button onclick="leaveComment();">Leave Comment</button></td>
 			</tr>
 		</table>
 	</form>

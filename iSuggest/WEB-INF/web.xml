@@ -63,5 +63,16 @@
     <servlet-name>Create Suggestion</servlet-name>
     <url-pattern>/createSuggestion</url-pattern>
   </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>Leave Comment</servlet-name>
+    <description>Handles the submission of comments.</description>
+    <servlet-class>Servlets.LeaveComment</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Leave Comment</servlet-name>
+    <url-pattern>/leaveComment</url-pattern>
+  </servlet-mapping>
 
 </web-app>

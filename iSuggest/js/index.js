@@ -23,3 +23,11 @@ function register() {
 function createSuggestion() {
 	document.createSuggestionForm.submit;
 }
+
+function showLeaveCommentBox() {
+	$( "#leaveCommentDialog" ).dialog({ height: 350, width: 750, modal: true });
+}
+
+function leaveComment() {
+	document.leaveCommentForm.submit;
+}

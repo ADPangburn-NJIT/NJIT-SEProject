@@ -19,6 +19,7 @@ public class Post {
 	private String thumbsUp = null;
 	private String thumbsDown = null;
 	
+	private User user = new User();
 	private List errorMessage = new ArrayList();
 	
 	PreparedStatement ps = null;
@@ -27,6 +28,61 @@ public class Post {
 	DatabaseUtils db = new DatabaseUtils();
 	
 	public Post() {}
+	
+	public ArrayList getActiveSuggestions(int page) throws SQLException {
+		//Database connection stuff
+		con = db.connectToDatabase();
+		int startPost = (page * 6) - 5; //6 posts per page
+		int endPost = page * 6; //6 Posts per page
+		int postCount = 1;
+		ArrayList activePosts = new ArrayList();
+		//Get the relevant post data.
+		ps = con.prepareStatement(
+				"SELECT post_id, user_id, title, thumbs_up, thumbs_down" +
+				" FROM active_posts" +
+				" WHERE 1=1;");
+		rs = ps.executeQuery();
+		while (rs.next()) {
+			if (postCount >= startPost && postCount <= endPost) {
+				Post post = new Post();
+				post.setPostId(rs.getString("post_id"));
+				post.setUserId(rs.getString("user_id"));
+				post.setTitle(rs.getString("title"));
+				post.setThumbsUp(rs.getString("thumbs_up"));
+				post.setThumbsDown(rs.getString("thumbs_down"));
+				activePosts.add(post);
+			}
+			postCount++;
+		}
+		rs.close();
+		ps.close();
+
+		/*Now that we have the relevant post data, we need to loop through it to get the user data that corresponds with the
+		 * user_id grabbed from `active_posts` and match it with the one in `user`
+		 */
+		for (int i = 0; i < activePosts.size(); i++) {
+			User user = ((Post)activePosts.get(i)).getUser();
+			ps = con.prepareStatement(
+					"SELECT user_id, first_name, last_name, user_type" +
+					" FROM user" +
+					" WHERE user_id=?");
+			ps.setString(1, ((Post)activePosts.get(i)).getUserId());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				user.setUserId(rs.getString("user_id"));
+				user.setFirstName(rs.getString("first_name"));
+				user.setLastName(rs.getString("last_name"));
+				user.setUserType(rs.getString("user_type"));
+			}
+			rs.close();
+			ps.close();
+		}
+
+		if (activePosts.size() > 0) {
+			return activePosts;
+		}
+		return null;
+	}
 	
 	public void postSuggestion() throws SQLException {
 		//Database connection stuff
@@ -187,5 +243,13 @@ public class Post {
 	}
 	public void setThumbsDown(String thumbsDown) {
 		this.thumbsDown = TextUtils.zeroToNull(thumbsDown);
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }
