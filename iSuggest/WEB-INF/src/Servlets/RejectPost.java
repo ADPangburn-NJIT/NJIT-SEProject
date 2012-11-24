@@ -11,31 +11,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import DataStructures.Post;
 import DataStructures.User;
 
-public class Login extends HttpServlet {
+public class RejectPost extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		HttpSession session = request.getSession();
-		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("adminIndex.jsp");
 		List generalMessage = new ArrayList();
-		User user = new User();
+		Post post = new Post();
 		try {
-			user.setEmailAddr(request.getParameter("emailAddr"));
-			user.setPassword(request.getParameter("password"));
-			user.query();
-			if ("99".equals(user.getUserType())) {
-				dispatcher = request.getRequestDispatcher("adminIndex.jsp");
-			}
+			post.setPostId(request.getParameter("rejectPostId"));
+			post.rejectPost();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (user.getErrorMessage().size() > 0) {
-			request.setAttribute("errorMessage", user.getErrorMessage());
+		if (post.getErrorMessage().size() > 0) {
+			request.setAttribute("errorMessage", post.getErrorMessage());
 		}
 		else {
-			session.setAttribute("user", user);
-			generalMessage.add("Welcome to iSuggest: " + user.getEmailAddr());
+			generalMessage.add("Post has been rejected.");
 			request.setAttribute("generalMessage", generalMessage);
 		}
 		dispatcher.forward(request, response);

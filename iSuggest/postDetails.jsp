@@ -85,19 +85,19 @@
         <table>
             <tr>
                 <td class="sortByCategoriesCell">
-                    <button type="button">Facilities</button>
+                    <button type="button" onclick="sortByCategory('Facilities');">Facilities</button>
                 </td>
                 <td class="sortByCategoriesCell">
-                    <button type="button">Activities</button>
+                    <button type="button" onclick="sortByCategory('Activities');">Activities</button>
                 </td>
                 <td class="sortByCategoriesCell">
-                    <button type="button">Entertainment</button>
+                    <button type="button" onclick="sortByCategory('Entertainment');">Entertainment</button>
                 </td>
                 <td class="sortByCategoriesCell">
-                    <button type="button">Commuting</button>
+                    <button type="button" onclick="sortByCategory('Commuting');">Commuting</button>
                 </td>
                 <td class="sortByCategoriesCell">
-                    <button type="button">Campus Life</button>
+                    <button type="button" onclick="sortByCategory('Campus Life');">Campus Life</button>
                 </td>
             </tr>
         </table>
@@ -233,5 +233,8 @@
 		</table>
 	</form>
 </div>
+<form name="sortByCategoriesForm" id="sortByCategoriesForm" method="post" action="index.jsp">
+	<input type="hidden" name="category" id="category" />
+</form>
 </body>
 </html>

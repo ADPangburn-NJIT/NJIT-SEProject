@@ -74,5 +74,27 @@
     <servlet-name>Leave Comment</servlet-name>
     <url-pattern>/leaveComment</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>Accept Post</servlet-name>
+    <description>Handles the acceptance of posts.</description>
+    <servlet-class>Servlets.AcceptPost</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Accept Post</servlet-name>
+    <url-pattern>/acceptPost</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>Reject Post</servlet-name>
+    <description>Handles the rejecting of posts.</description>
+    <servlet-class>Servlets.RejectPost</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Reject Post</servlet-name>
+    <url-pattern>/rejectPost</url-pattern>
+  </servlet-mapping>
 
 </web-app>

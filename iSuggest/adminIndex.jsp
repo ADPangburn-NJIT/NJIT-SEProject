@@ -5,18 +5,19 @@
 	<jsp:useBean id="errorMessage" class="java.util.ArrayList" scope="request"/>
 	<jsp:useBean id="user" class="DataStructures.User" scope="session"/>
 	<jsp:useBean id="post" class="DataStructures.Post" scope="page"/>
+	
 	<%@ page import="Utils.TextUtils" %>
 	<%@ page import="java.util.ArrayList" %>
 	<%@ page import="DataStructures.Post" %>
+	
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>iSuggest</title>
-	<link href="css/index.css" rel="stylesheet" type="text/css" />
+	<link href="css/adminIndex.css" rel="stylesheet" type="text/css" />
 	<link href="css/redmond/jquery-ui-1.9.1.custom.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="js/index.js"></script>
 	<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.9.1.custom.js"></script>
 	<script>
-	
 	<% if (generalMessage.size() > 0) { %>
 			 $(function() {
 			        $( "#generalMessageDialog" ).dialog({ height: 200, width: 450, modal:true });
@@ -28,19 +29,24 @@
 			 });
 	 <% } %>
     </script>
+    <script>
+    $(function() {
+        $( "#pendingPostsList" ).accordion();
+    });
+    </script>
 </head>
 
 <% 
-	int currentPage = 1;
-	String category = request.getParameter("category");
-	ArrayList activePosts = new ArrayList();
-	activePosts = post.getActiveSuggestions(currentPage, category);
-	if (request.getParameter("page") != null) { 
-		currentPage = Integer.parseInt(request.getParameter("page"));
-		activePosts = post.getActiveSuggestions(currentPage, category);
-	}
-%>
+	ArrayList pendingPosts = new ArrayList();
+	pendingPosts = post.getPendingPosts();
 
+	//If the user does not belong here, send them to index.jsp
+	if (!"99".equals(user.getUserType())) {
+		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+%>
 <body>
 <div class="content">
     <div class="header">
@@ -73,18 +79,15 @@
     </div>
 
     <div class="suggestionsByCategory"> 
-		<button class="createSuggestionButton" type="button" <% if (user.getUserId() == null) { %> disabled="disabled" <% } %>onclick="showCreateSuggestionDialog();">Create A Suggestion</button>       
+		Administrator Page
         <table>
             <tr>
                 <td class="searchCell">
-                    <form name="searchForm" id="searchForm" method="post" action="">
-                      <input style="font-size:20px;" type="text" value="Search" size="40" maxlength="80" />
-                    </form>
                 </td>
             </tr>
         </table>
         <table>
-            <tr>
+             <tr>
                 <td class="sortByCategoriesCell">
                     <button type="button" onclick="sortByCategory('Facilities');">Facilities</button>
                 </td>
@@ -103,67 +106,37 @@
             </tr>
         </table>
     </div>
-    
-    <div class="suggestionsByRoles">
-        <h3 style="font-size:15px; text-align:center;">Sort by Group</h3>
-        <table>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">All</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">Undergrads</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">Grad</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">Alumni</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button">Faculty</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-    
    <div class="suggestionPosts">
-       	<h1 class="suggestionPostsHeader">Newest Suggestions --<a href="index.jsp?page=<%= currentPage + 1 %>"> Next</a></h1>
-    	<% 
-    	if (activePosts.size() > 0) {
-	    	for (int i = 0; i < activePosts.size(); i++) { 
-	    		Post displayPost = (Post)activePosts.get(i);
-	    	%>
-		        <table class="suggestionPostsTable">
-		        	<tr>
-		            	<td class="suggestionPostsDataCell" style="text-align:left"><%= TextUtils.zeroToNull(displayPost.getUser().getUserType()) %></td>
-		                <td class="suggestionPostsDataCell" style="text-align:left"></td>
-		                <td class="suggestionPostsDataCell" style="text-align:right"><%= TextUtils.zeroToNull(displayPost.getUser().getFirstName()) %></td>
-		            </tr>
-		        	<tr>
-		            	 <td class="suggestionPostsDataCell" style="text-align:left"><%= displayPost.getThumbsUp() %></td>
-		            	<td class="suggestionPostsTitleCell" style="text-align:center"><a href="postDetails.jsp?postId=<%= TextUtils.zeroToNull(displayPost.getPostId()) %>"><%= TextUtils.zeroToNull(displayPost.getTitle()) %></a></td>
-		                <td class="suggestionPostsDataCell" style="text-align:right"><%= displayPost.getThumbsDown() %></td>
-		            </tr>
-		        </table>
-		<% } 
-    	}
-    	else { %>
-    		<br />
-    		<p style="margin-left:200px;">You've reached the end of the line. Congratulations.</p>
-    	<% } %>
+    	<h1 class="suggestionPostsHeader">Pending Suggestions</h1>
     </div>
-    <br />
+    
+    <div class="pendingPostsList" id="pendingPostsList" style="padding-left: 11px">
+		<% for (int i = 0; i < pendingPosts.size(); i++) { 
+    		Post displayPost = (Post)pendingPosts.get(i);
+    	%>
+	        <h3><%= displayPost.getTitle() + " by: " + displayPost.getUser().getEmailAddr() + " (" + displayPost.getUser().getFirstName() + " " + displayPost.getUser().getLastName() + ")" %></h3>
+            <div>
+            	<p class="pendingPostsDescription">
+            		<%= displayPost.getDescription() %>
+                </p>
+                <p>
+                	<button onclick="confirmAccept('<%= displayPost.getPostId() %>');">Accept</button>
+                    <button onclick="confirmReject('<%= displayPost.getPostId() %>');">Reject</button>
+                </p>
+            </div>
+		<% } %>
+ 
+    </div>
     <div class="footer">iSuggest System - 2012</div>
 </div>
+
+<form name="acceptPostForm" id="acceptPostForm" method="post" action="acceptPost">
+	<input type="hidden" id="acceptPostId" name="acceptPostId" value="" />
+</form>
+
+<form name="rejectPostForm" id="rejectPostForm" method="post" action="rejectPost">
+	<input type="hidden" id="rejectPostId" name="rejectPostId" value="" />
+</form>
 
 <div style="display:none;" id="registrationDialog" title="Register for iSuggest">
 	<form name="registrationForm" id="registrationForm" method="post" action="register">
@@ -233,15 +206,7 @@
 			</tr>
 			<tr>
 				<td>Category</td>
-				<td>
-					<select id="category" name="category">
-						<option value="Facilities">Facilities</option>
-						<option value="Activities">Activities</option>
-						<option value="Entertainment">Entertainment</option>
-						<option value="Communting">Commuting</option>
-						<option value="Campus Life">Campus Life</option>
-					</select>
-				</td>
+				<td><input type="text" id="category" name="category" size="53" maxlength="60" /></td>
 			</tr>
 			<tr>
 				<td>Description</td>

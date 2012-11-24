@@ -31,3 +31,24 @@ function showLeaveCommentBox() {
 function leaveComment() {
 	document.leaveCommentForm.submit;
 }
+
+function confirmAccept(postId) {
+	var conf = confirm("Are you sure you want to accept this post? It will be moved to the main page where all users can see it.");
+	if(conf == true){
+		document.getElementById("acceptPostId").value = postId;
+		document.acceptPostForm.submit();
+	}
+}
+
+function confirmReject(postId) {
+	var conf = confirm("Are you sure you want to reject this post? It will be moved to the archive and will not be displayed.");
+	if(conf == true){
+		document.getElementById("rejectPostId").value = postId;
+		document.rejectPostForm.submit();
+	}
+}
+
+function sortByCategory(category) {
+	document.sortByCategoriesForm.category.value = category;
+	document.sortByCategoriesForm.submit();
+}
