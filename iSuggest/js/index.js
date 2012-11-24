@@ -49,6 +49,6 @@ function confirmReject(postId) {
 }
 
 function sortByCategory(category) {
-	document.sortByCategoriesForm.category.value = category;
+	document.getElementById("sortCategory").value = category;
 	document.sortByCategoriesForm.submit();
 }

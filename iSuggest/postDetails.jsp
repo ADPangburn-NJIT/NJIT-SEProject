@@ -234,7 +234,7 @@
 	</form>
 </div>
 <form name="sortByCategoriesForm" id="sortByCategoriesForm" method="post" action="index.jsp">
-	<input type="hidden" name="category" id="category" />
+	<input type="hidden" name="sortCategory" id="sortCategory" />
 </form>
 </body>
 </html>
