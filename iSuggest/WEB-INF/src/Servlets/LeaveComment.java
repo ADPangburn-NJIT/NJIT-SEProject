@@ -27,9 +27,6 @@ public class LeaveComment extends HttpServlet {
 			user = (User)session.getAttribute("user");
 			comment.setUserId(user.getUserId());
 			comment.setPostId(request.getParameter("postId"));
-			System.out.println(request.getParameter("postId"));
-			System.out.println(request.getParameter("userId"));
-			System.out.println(request.getParameter("commentText"));
 			comment.setCommentText(request.getParameter("commentText"));
 			comment.postComment();
 		}

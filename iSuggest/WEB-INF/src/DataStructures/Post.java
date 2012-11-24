@@ -86,7 +86,7 @@ public class Post {
 
 		String query = "SELECT post_id, user_id, title, thumbs_up, thumbs_down" +
 				" FROM active_posts";
-		if (category != null) {
+		if (category != null && !"null".equals(category)) {
 			query += " WHERE category='" + category + "'";
 		}
 		else {
@@ -137,7 +137,6 @@ public class Post {
 		//Database connection stuff
 		con = db.connectToDatabase();
 		if (title != null && category != null && description != null && description.length() <= 255) {
-			System.out.println("1");
 			ps = con.prepareStatement(
 					"SELECT MAX(post_id) AS post_id" +
 					" FROM pending_posts" +
@@ -171,7 +170,6 @@ public class Post {
 				this.errorMessage.add("Please enter a description for your suggestion.");
 			}
 			if (description.length() > 255) {
-				System.out.println("3");
 				this.errorMessage.add("Your description is too long. Max length is 255 characters. Your length: " + description.length() + " characters.");
 			}
 		}

@@ -12,7 +12,6 @@ public class Test extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
 		request.setAttribute("test", "hoopla");
-		System.out.println("TEST");
 		dispatcher.forward(request, response);
 	}
 }

@@ -136,7 +136,7 @@
     </div>
     
    <div class="suggestionPosts">
-       	<h1 class="suggestionPostsHeader">Newest Suggestions --<a href="index.jsp?page=<%= currentPage + 1 %>"> Next</a></h1>
+       	<h1 class="suggestionPostsHeader">Newest Suggestions --<a href="index.jsp?page=<%= currentPage + 1 %>&sortCategory=<%= category %>"> Next</a></h1>
     	<% 
     	if (activePosts.size() > 0) {
 	    	for (int i = 0; i < activePosts.size(); i++) { 
