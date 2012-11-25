@@ -16,15 +16,32 @@
 	<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.9.1.custom.js"></script>
 	<script>
-	
 	<% if (generalMessage.size() > 0) { %>
 			 $(function() {
-			        $( "#generalMessageDialog" ).dialog({ height: 200, width: 450, modal:true });
+			        $( "#generalMessageDialog" ).dialog({ height: 200, width: 450, modal:true, 
+			        	buttons: [
+			        	          {
+			        	        	  text: "Close",
+			        	              click: function() { $(this).dialog("close"); }
+			        	          }
+			        	      ]		
+			        });
 			 });
 	 <% } 
 	   else if (errorMessage.size() > 0) { %>
 		  	 $(function() {
-		        $( "#errorMessageDialog" ).dialog({ height: 200, width: 350, modal:true });
+		        $( "#errorMessageDialog" ).dialog({ height: 200, width: 350, modal:true, 
+		        	buttons: [
+		        	          {
+		        	              text: "Back",
+		        	              click: function() { parent.history.back(); }
+		        	          },
+		        	          {
+		        	        	  text: "Close",
+		        	              click: function() { $(this).dialog("close"); }
+		        	          }
+		        	      ]	
+		        });
 			 });
 	 <% } %>
     </script>

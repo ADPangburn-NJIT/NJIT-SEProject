@@ -1,5 +1,9 @@
 package Utils;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,20 +15,46 @@ public class TextUtils {
 	public static final String defaultTimeFormat = "HH:mm";
 	public TextUtils() {}
 	
-	public static String nullToZero(String s) {
+	public static String zeroToNull(String s) {
 		if ("".equals(s)) {
 			s = null;
 		}
 		return s;
 	}
 	
-	public static String zeroToNull(String s) {
+	public static String nullToZero(String s) {
 		if (s == null) {
 			s = "";
 		}
 		return s;
 	}
 	
+	public static boolean bannedWords(String s) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		DatabaseUtils db = new DatabaseUtils();
+		Connection con = db.connectToDatabase();
+		
+		ArrayList bannedWords = new ArrayList();
+		
+		ps = con.prepareStatement(
+				"SELECT word" +
+				" FROM banned_words" +
+				" WHERE 1=1");
+		rs = ps.executeQuery();
+		while (rs.next()) {
+			bannedWords.add(rs.getString("word").toUpperCase());
+		}
+		rs.close();
+		ps.close();
+		
+		for (int i = 0; i < bannedWords.size(); i++) {
+			if (s.toUpperCase().contains((String)bannedWords.get(i))) {
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Gets the current date as a String in the default format
 	 * 

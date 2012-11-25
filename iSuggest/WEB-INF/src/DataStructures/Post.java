@@ -137,27 +137,32 @@ public class Post {
 		//Database connection stuff
 		con = db.connectToDatabase();
 		if (title != null && category != null && description != null && description.length() <= 255) {
-			ps = con.prepareStatement(
-					"SELECT MAX(post_id) AS post_id" +
-					" FROM pending_posts" +
-					" WHERE 1=1");
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				this.postId = Integer.toString(rs.getInt("post_id") + 1);
+			if (TextUtils.bannedWords(title) == false && TextUtils.bannedWords(description) == false) {
+				ps = con.prepareStatement(
+						"SELECT MAX(post_id) AS post_id" +
+						" FROM pending_posts" +
+						" WHERE 1=1");
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					this.postId = Integer.toString(rs.getInt("post_id") + 1);
+				}
+				rs.close();
+				ps.close();
+				
+				ps = con.prepareStatement(
+						"INSERT INTO pending_posts (post_id, user_id, title, category, description)" +
+						" VALUES(?, ?, ?, ?, ?)");
+				ps.setInt(1, Integer.parseInt(this.postId));
+				ps.setString(2, this.userId);
+				ps.setString(3, this.title);
+				ps.setString(4, this.category);
+				ps.setString(5, this.description);
+				ps.executeUpdate();
+				ps.close();
 			}
-			rs.close();
-			ps.close();
-			
-			ps = con.prepareStatement(
-					"INSERT INTO pending_posts (post_id, user_id, title, category, description)" +
-					" VALUES(?, ?, ?, ?, ?)");
-			ps.setInt(1, Integer.parseInt(this.postId));
-			ps.setString(2, this.userId);
-			ps.setString(3, this.title);
-			ps.setString(4, this.category);
-			ps.setString(5, this.description);
-			ps.executeUpdate();
-			ps.close();
+			else {
+				this.errorMessage.add("Please sanitize your language.");
+			}
 		}
 		else {
 			if (title == null) {
@@ -169,8 +174,10 @@ public class Post {
 			if (description == null) {
 				this.errorMessage.add("Please enter a description for your suggestion.");
 			}
-			if (description.length() > 255) {
-				this.errorMessage.add("Your description is too long. Max length is 255 characters. Your length: " + description.length() + " characters.");
+			if (description != null) {
+				if (description.length() > 255) {
+					this.errorMessage.add("Your description is too long. Max length is 255 characters. Your length: " + description.length() + " characters.");
+				}
 			}
 		}
 		if (con != null) {

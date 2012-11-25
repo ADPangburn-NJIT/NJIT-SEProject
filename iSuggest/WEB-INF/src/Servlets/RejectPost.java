@@ -31,7 +31,7 @@ public class RejectPost extends HttpServlet {
 			request.setAttribute("errorMessage", post.getErrorMessage());
 		}
 		else {
-			generalMessage.add("Post has been rejected.");
+			generalMessage.add("Suggestion has been rejected.");
 			request.setAttribute("generalMessage", generalMessage);
 		}
 		dispatcher.forward(request, response);

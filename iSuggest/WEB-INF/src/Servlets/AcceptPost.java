@@ -31,7 +31,7 @@ public class AcceptPost extends HttpServlet {
 			request.setAttribute("errorMessage", post.getErrorMessage());
 		}
 		else {
-			generalMessage.add("Post has been accepted.");
+			generalMessage.add("Suggestion has been accepted.");
 			request.setAttribute("generalMessage", generalMessage);
 		}
 		dispatcher.forward(request, response);

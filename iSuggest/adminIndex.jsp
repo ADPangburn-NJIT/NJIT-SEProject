@@ -20,12 +20,30 @@
 	<script>
 	<% if (generalMessage.size() > 0) { %>
 			 $(function() {
-			        $( "#generalMessageDialog" ).dialog({ height: 200, width: 450, modal:true });
+			        $( "#generalMessageDialog" ).dialog({ height: 200, width: 450, modal:true, 
+			        	buttons: [
+			        	          {
+			        	        	  text: "Close",
+			        	              click: function() { $(this).dialog("close"); }
+			        	          }
+			        	      ]		
+			        });
 			 });
 	 <% } 
 	   else if (errorMessage.size() > 0) { %>
 		  	 $(function() {
-		        $( "#errorMessageDialog" ).dialog({ height: 200, width: 350, modal:true });
+		        $( "#errorMessageDialog" ).dialog({ height: 200, width: 350, modal:true, 
+		        	buttons: [
+		        	          {
+		        	              text: "Back",
+		        	              click: function() { parent.history.back(); }
+		        	          },
+		        	          {
+		        	        	  text: "Close",
+		        	              click: function() { $(this).dialog("close"); }
+		        	          }
+		        	      ]	
+		        });
 			 });
 	 <% } %>
     </script>

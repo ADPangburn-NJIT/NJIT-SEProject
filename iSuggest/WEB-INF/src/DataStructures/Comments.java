@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Utils.DatabaseUtils;
+import Utils.TextUtils;
 
 public class Comments {
 	private String commentId = null;
@@ -156,27 +157,27 @@ public class Comments {
 	}
 
 	public void setCommentId(String commentId) {
-		this.commentId = commentId;
+		this.commentId = TextUtils.zeroToNull(commentId);
 	}
 
 	public void setPostId(String postId) {
-		this.postId = postId;
+		this.postId = TextUtils.zeroToNull(postId);
 	}
 
 	public void setUserId(String userId) {
-		this.userId = userId;
+		this.userId = TextUtils.zeroToNull(userId);
 	}
 
 	public void setCommentText(String commentText) {
-		this.commentText = commentText;
+		this.commentText = TextUtils.zeroToNull(commentText);
 	}
 
 	public void setThumbsUp(String thumbsUp) {
-		this.thumbsUp = thumbsUp;
+		this.thumbsUp = TextUtils.zeroToNull(thumbsUp);
 	}
 
 	public void setThumbsDown(String thumbsDown) {
-		this.thumbsDown = thumbsDown;
+		this.thumbsDown = TextUtils.zeroToNull(thumbsDown);
 	}
 
 	public void setErrorMessage(List errorMessage) {

@@ -36,7 +36,7 @@ public class CreateSuggestion extends HttpServlet {
 			request.setAttribute("errorMessage", post.getErrorMessage());
 		}
 		else {
-			generalMessage.add("Post created successfully. It will not appear until it has been approved by an administrator.");
+			generalMessage.add("Suggestion created successfully. It will not appear until it has been approved by an administrator.");
 			request.setAttribute("generalMessage", generalMessage);
 		}
 		dispatcher.forward(request, response);
