@@ -97,4 +97,14 @@
     <url-pattern>/rejectPost</url-pattern>
   </servlet-mapping>
 
+   <servlet>
+    <servlet-name>Vote Suggestion</servlet-name>
+    <description>Handles the voting on suggestions.</description>
+    <servlet-class>Servlets.VoteSuggestion</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Vote Suggestion</servlet-name>
+    <url-pattern>/voteSuggestion</url-pattern>
+  </servlet-mapping>
 </web-app>

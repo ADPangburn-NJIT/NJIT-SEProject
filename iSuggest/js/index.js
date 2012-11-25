@@ -52,3 +52,19 @@ function sortByCategory(category) {
 	document.getElementById("sortCategory").value = category;
 	document.sortByCategoriesForm.submit();
 }
+
+function voteSuggestion(postId, vote, currentPage) {
+	document.voteSuggestionForm.voteSuggestionPostId.value = postId;
+	document.voteSuggestionForm.vote.value = vote;
+	document.voteSuggestionForm.currentPage.value = currentPage;
+	document.voteSuggestionForm.submit();
+}
+
+function pleaseLogin() {
+	alert("Please Login to use this feature.");
+	document.getElementById("emailAddr").focus();
+}
+
+function alreadyVoted(title) {
+	alert("You have already voted on suggestion: '" + title + "'");
+}

@@ -53,6 +53,11 @@ public class TextUtils {
 				return true;
 			}
 		}
+		
+		if (con != null) {
+			con.close();
+		}
+		
 		return false;
 	}
 	/**

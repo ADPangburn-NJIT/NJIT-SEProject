@@ -29,6 +29,57 @@ public class Post {
 	
 	public Post() {}
 	
+	public void voteSuggestion(int vote) throws SQLException {
+		//Database connection stuff
+		con = db.connectToDatabase();
+		int thumbsUp = 0;
+		int thumbsDown = 0;
+		
+		//Get the vote count for this specific post
+		ps = con.prepareStatement(
+				"SELECT thumbs_up, thumbs_down" +
+				" FROM active_posts" +
+				" WHERE post_id=?");
+		ps.setString(1, this.postId);
+		rs = ps.executeQuery();
+		if (rs.next()) {
+			thumbsUp = rs.getInt("thumbs_up");
+			thumbsDown = rs.getInt("thumbs_down");
+		}
+		rs.close();
+		ps.close();
+		
+		if (vote == 1) {
+			thumbsUp++;
+		}
+		else if (vote == -1) {
+			thumbsDown++;
+		}
+		else {
+			//Do nothing.
+		}
+		
+		//Do the update
+		ps = con.prepareStatement(
+				"UPDATE active_posts" +
+				" SET thumbs_up=?, thumbs_down=?" +
+				" WHERE post_id=?");
+		ps.setInt(1, thumbsUp);
+		ps.setInt(2, thumbsDown);
+		ps.setString(3, postId);
+		ps.executeUpdate();
+		ps.close();
+		
+		//Make a note of the user voting
+		ps = con.prepareStatement(
+				"INSERT INTO voted_suggestion (post_id, user_id, vote)" +
+				" VALUES (?, ?, ?)");
+		ps.setString(1, this.postId);
+		ps.setString(2, this.user.getUserId());
+		ps.setInt(3, vote);
+		ps.executeUpdate();
+		ps.close();
+	}
 	public ArrayList getPendingPosts() throws SQLException {
 		//Database connection stuff
 		con = db.connectToDatabase();

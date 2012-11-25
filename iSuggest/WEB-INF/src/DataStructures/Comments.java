@@ -59,8 +59,10 @@ public class Comments {
 			if (this.commentText == null) {
 				this.errorMessage.add("Please enter text into your comment.");
 			}
-			if (this.commentText.length() > 150) {
-				this.errorMessage.add("Comment length is too long, max length is 150. Yours: " + commentText.length());
+			if (this.commentText != null) {
+				if (this.commentText.length() > 150) {
+					this.errorMessage.add("Comment length is too long, max length is 150. Yours: " + commentText.length());
+				}
 			}
 		}
 		if (con != null) {

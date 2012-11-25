@@ -5,9 +5,12 @@
 	<jsp:useBean id="errorMessage" class="java.util.ArrayList" scope="request"/>
 	<jsp:useBean id="user" class="DataStructures.User" scope="session"/>
 	<jsp:useBean id="post" class="DataStructures.Post" scope="page"/>
+	
 	<%@ page import="Utils.TextUtils" %>
+	<%@ page import="Utils.VerificationUtils" %>
 	<%@ page import="java.util.ArrayList" %>
 	<%@ page import="DataStructures.Post" %>
+	
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>iSuggest</title>
 	<link href="css/index.css" rel="stylesheet" type="text/css" />
@@ -64,7 +67,7 @@
         <table>
             <tr>
                 <td class="logoCell">
-                    <img src="images/iSuggest_logo.jpg" alt="iSuggest logo this website can make suggestions for university" width="112" height="66" />
+                    <img src="images/faberLogo.png" alt="iSuggest logo this website can make suggestions for university" width="85" height="65" />
                 </td>
                 <td class="titleCell">
                     <h1>iSuggest</h1>
@@ -72,7 +75,7 @@
                 <td class="loginCell">
                 <% if (user.getUserId() == null) { %>
                     <form name="loginForm" id="loginForm" method="post" action="login">
-                        Email: <input type="text" name="emailAddr" id="emailAddr" size="15" maxlength="60" />
+                        Email: <input type="text" name="emailAddr" id="emailAddr" size="15" maxlength="60" onclick="this.select()" />
                         Password: <input type="password" name="password" id="password" size="10" maxlength="32" /><br />
                         <button type="button" onclick="showRegistrationBox();">Register</button>
                         <button type="submit">Login</button>                   
@@ -153,7 +156,7 @@
     </div>
     
    <div class="suggestionPosts">
-       	<h1 class="suggestionPostsHeader">Newest Suggestions --<a href="index.jsp?page=<%= currentPage + 1 %>&sortCategory=<%= category %>"> Next</a></h1>
+       	<h1 class="suggestionPostsHeader"><% if (currentPage > 1) { %><a href="index.jsp?page=<%= currentPage - 1 %>">Prev</a><% } %> -- Newest Suggestions -- <a href="index.jsp?page=<%= currentPage + 1 %>&sortCategory=<%= category %>"> Next</a></h1>
     	<% 
     	if (activePosts.size() > 0) {
 	    	for (int i = 0; i < activePosts.size(); i++) { 
@@ -166,9 +169,13 @@
 		                <td class="suggestionPostsDataCell" style="text-align:right"><%= TextUtils.zeroToNull(displayPost.getUser().getFirstName()) %></td>
 		            </tr>
 		        	<tr>
-		            	 <td class="suggestionPostsDataCell" style="text-align:left"><%= displayPost.getThumbsUp() %></td>
+		            	 <td class="suggestionPostsDataCell" style="text-align:left">
+		            	 	 <img src="images/thumbs-up-icon-flipped.png" alt="Thumbs Up" <% if (user.getUserId() != null) { if (VerificationUtils.canVoteSuggestion(displayPost.getPostId(), user.getUserId())) { %> onclick="voteSuggestion('<%= displayPost.getPostId() %>', '1', '<%= currentPage %>');" <% } else { %> onclick="alreadyVoted('<%= displayPost.getTitle() %>');" <% } } else { %> onclick="pleaseLogin();" <% } %>/><%= displayPost.getThumbsUp() %>
+		            	 </td>
 		            	<td class="suggestionPostsTitleCell" style="text-align:center"><a href="postDetails.jsp?postId=<%= TextUtils.zeroToNull(displayPost.getPostId()) %>"><%= TextUtils.zeroToNull(displayPost.getTitle()) %></a></td>
-		                <td class="suggestionPostsDataCell" style="text-align:right"><%= displayPost.getThumbsDown() %></td>
+		                <td class="suggestionPostsDataCell" style="text-align:right">
+		            	 	 <%= displayPost.getThumbsDown() %><img src="images/thumbs-down-icon.png" alt="Thumbs Down" <% if (user.getUserId() != null) { if (VerificationUtils.canVoteSuggestion(displayPost.getPostId(), user.getUserId())) { %> onclick="voteSuggestion('<%= displayPost.getPostId() %>', '-1', '<%= currentPage %>');" <% } else { %> onclick="alreadyVoted('<%= displayPost.getTitle() %>');" <% } } else { %> onclick="pleaseLogin();" <% } %>/>
+		                </td>
 		            </tr>
 		        </table>
 		<% } 
@@ -272,6 +279,11 @@
 </div>
 <form name="sortByCategoriesForm" id="sortByCategoriesForm" method="post" action="index.jsp">
 	<input type="hidden" name="sortCategory" id="sortCategory" />
+</form>
+<form name="voteSuggestionForm" id="voteSuggestionForm" method="post" action="voteSuggestion">
+	<input type="hidden" name="currentPage" id="currentPage" />
+	<input type="hidden" name="voteSuggestionPostId" id="voteSuggestionPostId" />
+	<input type="hidden" name="vote" id="vote" />
 </form>
 </body>
 </html>
