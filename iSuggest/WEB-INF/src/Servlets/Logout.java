@@ -20,4 +20,7 @@ public class Logout extends HttpServlet {
 		session.setAttribute("user", null);
 		dispatcher.forward(request, response);
 	}
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		doPost(request, response);
+	}
 }

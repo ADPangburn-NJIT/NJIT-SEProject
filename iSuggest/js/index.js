@@ -53,6 +53,11 @@ function sortByCategory(category) {
 	document.sortByCategoriesForm.submit();
 }
 
+function sortByGroup(group) {
+	document.sortByGroupForm.sortGroup.value = group;
+	document.sortByGroupForm.submit();
+}
+
 function voteSuggestion(postId, vote, currentPage) {
 	document.voteSuggestionForm.voteSuggestionPostId.value = postId;
 	document.voteSuggestionForm.vote.value = vote;
@@ -67,4 +72,11 @@ function pleaseLogin() {
 
 function alreadyVoted(title) {
 	alert("You have already voted on suggestion: '" + title + "'");
+}
+
+function suggestionIndex() {
+	window.location = "index.jsp";
+}
+function adminIndex() {
+	window.location = "adminIndex.jsp";
 }

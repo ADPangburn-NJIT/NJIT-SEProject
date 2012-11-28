@@ -53,11 +53,13 @@
 <% 
 	int currentPage = 1;
 	String category = request.getParameter("sortCategory");
+	String search = request.getParameter("search");
+	String group = request.getParameter("sortGroup");
 	ArrayList activePosts = new ArrayList();
-	activePosts = post.getActiveSuggestions(currentPage, category);
+	activePosts = post.getActiveSuggestions(currentPage, category, search, group);
 	if (request.getParameter("page") != null) { 
 		currentPage = Integer.parseInt(request.getParameter("page"));
-		activePosts = post.getActiveSuggestions(currentPage, category);
+		activePosts = post.getActiveSuggestions(currentPage, category, search, group);
 	}
 %>
 
@@ -84,6 +86,9 @@
                 else { %>
                 	Logged in as <%= user.getEmailAddr() %>.
                 	 <form name="logoutForm" id="logoutForm" method="post" action="logout">
+                	 <% if ("99".equals(user.getUserType())) { %>
+                	 	<button type="button" onclick="adminIndex();">Admin Home</button>
+               	 	<% } %>
                         <button type="submit">Logout</button>                   
                     </form>
                 <% } %>
@@ -97,8 +102,8 @@
         <table>
             <tr>
                 <td class="searchCell">
-                    <form name="searchForm" id="searchForm" method="post" action="">
-                      <input style="font-size:20px;" type="text" value="Search" size="40" maxlength="80" />
+                    <form name="searchForm" id="searchForm" method="post" action="index.jsp">
+                      <input style="font-size:20px;" type="text" value="Search" id="search" name="search" size="40" maxlength="80" />
                     </form>
                 </td>
             </tr>
@@ -129,34 +134,41 @@
         <table>
             <tr>
                 <td class="sortByGroupCell">
-                    <button type="button">All</button>
+                    <button type="button" onclick="window.location='index.jsp'">All</button>
                 </td>
             </tr>
             <tr>
                 <td class="sortByGroupCell">
-                    <button type="button">Undergrads</button>
+                    <button type="button" onclick="sortByGroup('1');">Undergrads</button>
                 </td>
             </tr>
             <tr>
                 <td class="sortByGroupCell">
-                    <button type="button">Grad</button>
+                    <button type="button" onclick="sortByGroup('2');">Grad</button>
                 </td>
             </tr>
             <tr>
                 <td class="sortByGroupCell">
-                    <button type="button">Alumni</button>
+                    <button type="button" onclick="sortByGroup('3');">Alumni</button>
                 </td>
             </tr>
             <tr>
                 <td class="sortByGroupCell">
-                    <button type="button">Faculty</button>
+                    <button type="button" onclick="sortByGroup('4');">Staff</button>
+                </td>
+            </tr>
+            <tr>
+                <td class="sortByGroupCell">
+                    <button type="button" onclick="sortByGroup('5');">Faculty</button>
                 </td>
             </tr>
         </table>
     </div>
-    
+    <form id="sortByGroupForm" name="sortByGroupForm" method="post" action="index.jsp">
+    	<input type="hidden" value="sortGroup" name="sortGroup" />
+    </form>
    <div class="suggestionPosts">
-       	<h1 class="suggestionPostsHeader"><% if (currentPage > 1) { %><a href="index.jsp?page=<%= currentPage - 1 %>">Prev</a><% } %> -- Newest Suggestions -- <a href="index.jsp?page=<%= currentPage + 1 %>&sortCategory=<%= category %>"> Next</a></h1>
+       	<h1 class="suggestionPostsHeader"><% if (currentPage > 1) { %><a href="index.jsp?page=<%= currentPage - 1 %>&sortCategory=<%= category %>&search=<%= search %>&sortGroup=<%= group %>"> <- </a><% } %> -- Newest Suggestions -- <a href="index.jsp?page=<%= currentPage + 1 %>&sortCategory=<%= category %>&search=<%= search %>&sortGroup=<%= group %>"> -></a></h1>
     	<% 
     	if (activePosts.size() > 0) {
 	    	for (int i = 0; i < activePosts.size(); i++) { 
@@ -164,15 +176,15 @@
 	    	%>
 		        <table class="suggestionPostsTable">
 		        	<tr>
-		            	<td class="suggestionPostsDataCell" style="text-align:left"><%= TextUtils.zeroToNull(displayPost.getUser().getUserType()) %></td>
+		            	<td class="suggestionPostsDataCell" style="text-align:left"><%= TextUtils.nullToZero(displayPost.getUser().getRole()) %></td>
 		                <td class="suggestionPostsDataCell" style="text-align:left"></td>
-		                <td class="suggestionPostsDataCell" style="text-align:right"><%= TextUtils.zeroToNull(displayPost.getUser().getFirstName()) %></td>
+		                <td class="suggestionPostsDataCell" style="text-align:right"><%= TextUtils.nullToZero(displayPost.getUser().getFirstName() + " " + TextUtils.nullToZero(displayPost.getUser().getLastName())) %></td>
 		            </tr>
 		        	<tr>
 		            	 <td class="suggestionPostsDataCell" style="text-align:left">
 		            	 	 <img src="images/thumbs-up-icon-flipped.png" alt="Thumbs Up" <% if (user.getUserId() != null) { if (VerificationUtils.canVoteSuggestion(displayPost.getPostId(), user.getUserId())) { %> onclick="voteSuggestion('<%= displayPost.getPostId() %>', '1', '<%= currentPage %>');" <% } else { %> onclick="alreadyVoted('<%= displayPost.getTitle() %>');" <% } } else { %> onclick="pleaseLogin();" <% } %>/><%= displayPost.getThumbsUp() %>
 		            	 </td>
-		            	<td class="suggestionPostsTitleCell" style="text-align:center"><a href="postDetails.jsp?postId=<%= TextUtils.zeroToNull(displayPost.getPostId()) %>"><%= TextUtils.zeroToNull(displayPost.getTitle()) %></a></td>
+		            	<td class="suggestionPostsTitleCell" style="text-align:center"><a href="postDetails.jsp?postId=<%= TextUtils.nullToZero(displayPost.getPostId()) %>"><%= TextUtils.nullToZero(displayPost.getTitle()) %></a></td>
 		                <td class="suggestionPostsDataCell" style="text-align:right">
 		            	 	 <%= displayPost.getThumbsDown() %><img src="images/thumbs-down-icon.png" alt="Thumbs Down" <% if (user.getUserId() != null) { if (VerificationUtils.canVoteSuggestion(displayPost.getPostId(), user.getUserId())) { %> onclick="voteSuggestion('<%= displayPost.getPostId() %>', '-1', '<%= currentPage %>');" <% } else { %> onclick="alreadyVoted('<%= displayPost.getTitle() %>');" <% } } else { %> onclick="pleaseLogin();" <% } %>/>
 		                </td>

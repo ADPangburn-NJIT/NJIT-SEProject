@@ -40,4 +40,8 @@ public class Login extends HttpServlet {
 		}
 		dispatcher.forward(request, response);
 	}
+	
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		doPost(request, response);
+	}
 }

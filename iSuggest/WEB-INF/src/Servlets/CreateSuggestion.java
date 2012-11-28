@@ -24,6 +24,7 @@ public class CreateSuggestion extends HttpServlet {
 		try {
 			user = (User)session.getAttribute("user");
 			post.setUserId(user.getUserId());
+			post.setUserType(user.getUserType());
 			post.setTitle(request.getParameter("title"));
 			post.setCategory(request.getParameter("category"));
 			post.setDescription(request.getParameter("description"));

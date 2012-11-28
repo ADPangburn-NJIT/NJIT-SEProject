@@ -17,7 +17,7 @@ public class User {
 	private String lastName = null;
 	private String password = null;
 	private String userType = null;
-	
+	private String role = null;
 	private List errorMessage = new ArrayList();
 	
 	PreparedStatement ps = null;
@@ -112,13 +112,32 @@ public class User {
 			this.userType = rs.getString("user_type");
 		}
 		rs.close();
-		ps.close();			
+		ps.close();
+		
+		//Get the string role of the user
+		ps = con.prepareStatement(
+				"SELECT role" +
+				" FROM user_roles" +
+				" WHERE role_id=?");
+		ps.setString(1, this.userType);
+		rs = ps.executeQuery();
+		if (rs.next()) {
+			this.role = rs.getString("role");
+		}
+		rs.close();
+		ps.close();
+		
 		if (con != null) {
 			con.close();
 		}
 		if (emailAddr != null && password != null && !exists) {
 			errorMessage.add("Email address or password isn't correct.  Please re-enter.");
 		}	
+	}
+
+	
+	public String getRole() {
+		return role;
 	}
 
 	public String getUserId() {
@@ -149,6 +168,10 @@ public class User {
 		return errorMessage;
 	}
 
+	public void setRole(String role) {
+		this.role = TextUtils.zeroToNull(role);
+	}
+	
 	public void setUserId(String userId) {
 		this.userId = TextUtils.zeroToNull(userId);
 	}

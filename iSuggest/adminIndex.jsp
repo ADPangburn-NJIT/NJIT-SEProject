@@ -71,7 +71,7 @@
         <table>
             <tr>
                 <td class="logoCell">
-                    <img src="images/iSuggest_logo.jpg" alt="iSuggest logo this website can make suggestions for university" width="112" height="66" />
+                    <img src="images/faberLogo.png" alt="iSuggest logo this website can make suggestions for university" width="85" height="65" />
                 </td>
                 <td class="titleCell">
                     <h1>iSuggest</h1>
@@ -88,6 +88,7 @@
                 else { %>
                 	Logged in as <%= user.getEmailAddr() %>.
                 	 <form name="logoutForm" id="logoutForm" method="post" action="logout">
+                		<button type="button" onclick="suggestionIndex();">Suggestion Home</button>
                         <button type="submit">Logout</button>                   
                     </form>
                 <% } %>

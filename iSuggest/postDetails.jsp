@@ -63,7 +63,7 @@
         <table>
             <tr>
                 <td class="logoCell">
-                    <img src="images/iSuggest_logo.jpg" alt="iSuggest logo this website can make suggestions for university" width="112" height="66" />
+                    <img src="images/faberLogo.png" alt="iSuggest logo this website can make suggestions for university" width="85" height="65" />
                 </td>
                 <td class="titleCell">
                     <h1>iSuggest</h1>
@@ -93,8 +93,8 @@
         <table>
             <tr>
                 <td class="searchCell">
-                    <form name="searchForm" id="searchForm" method="post" action="">
-                      <input style="font-size:20px;" type="text" value="Search" size="40" maxlength="80" />
+                    <form name="searchForm" id="searchForm" method="post" action="index.jsp">
+                      <input style="font-size:20px;" type="text" value="Search" name="search" id="search" size="40" maxlength="80" />
                     </form>
                 </td>
             </tr>

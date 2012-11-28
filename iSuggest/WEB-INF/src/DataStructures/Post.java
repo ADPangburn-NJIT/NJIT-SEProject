@@ -1,5 +1,7 @@
 package DataStructures;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +15,7 @@ import Utils.TextUtils;
 public class Post {
 	private String postId = null;
 	private String userId = null;
+	private String userType = null;
 	private String title = null;
 	private String category = null;
 	private String description = null;
@@ -126,7 +129,7 @@ public class Post {
 		return pendingPosts;
 	}
 	
-	public ArrayList getActiveSuggestions(int page, String category) throws SQLException {
+	public ArrayList getActiveSuggestions(int page, String category, String search, String group) throws SQLException, UnsupportedEncodingException {
 		//Database connection stuff
 		con = db.connectToDatabase();
 		int startPost = (page * 6) - 5; //6 posts per page
@@ -134,11 +137,17 @@ public class Post {
 		int postCount = 1;
 		ArrayList activePosts = new ArrayList();
 		//Get the relevant post data.
-
 		String query = "SELECT post_id, user_id, title, thumbs_up, thumbs_down" +
 				" FROM active_posts";
 		if (category != null && !"null".equals(category)) {
 			query += " WHERE category='" + category + "'";
+		}
+		else if (search != null && !"null".equals(search)) {
+			System.out.println(search);
+			query += " WHERE title LIKE " + "'%" + URLEncoder.encode(search, "UTF-8") + "%'";
+		}
+		else if (group != null && !"null".equals(group)) {
+			query += " WHERE user_type='" + group + "'"; 
 		}
 		else {
 			query += " WHERE 1=1";
@@ -179,6 +188,19 @@ public class Post {
 			}
 			rs.close();
 			ps.close();
+			
+			//Get the string role of the user
+			ps = con.prepareStatement(
+					"SELECT role" +
+					" FROM user_roles" +
+					" WHERE role_id=?");
+			ps.setString(1, user.getUserType());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				user.setRole(rs.getString("role"));
+			}
+			rs.close();
+			ps.close();
 		}
 
 		return activePosts;
@@ -201,13 +223,14 @@ public class Post {
 				ps.close();
 				
 				ps = con.prepareStatement(
-						"INSERT INTO pending_posts (post_id, user_id, title, category, description)" +
-						" VALUES(?, ?, ?, ?, ?)");
+						"INSERT INTO pending_posts (post_id, user_id, title, category, description, user_type)" +
+						" VALUES(?, ?, ?, ?, ?, ?)");
 				ps.setInt(1, Integer.parseInt(this.postId));
 				ps.setString(2, this.userId);
 				ps.setString(3, this.title);
 				ps.setString(4, this.category);
 				ps.setString(5, this.description);
+				ps.setString(6, this.userType);
 				ps.executeUpdate();
 				ps.close();
 			}
@@ -246,10 +269,11 @@ public class Post {
 		String title = null;
 		String category = null;
 		String description = null;
+		String userType = null;
 		
 		if (this.postId != null) {
 			ps = con.prepareStatement(
-					"SELECT post_id, user_id, title, category, description" +
+					"SELECT post_id, user_id, title, category, description, user_type" +
 					" FROM pending_posts" +
 					" WHERE post_id=?");
 			ps.setString(1, this.postId);
@@ -260,6 +284,7 @@ public class Post {
 				title = rs.getString("title");
 				category = rs.getString("category");
 				description = rs.getString("description");
+				userType = rs.getString("user_type");
 			}
 			rs.close();
 			ps.close();
@@ -276,8 +301,8 @@ public class Post {
 			ps.close();
 			
 			ps = con.prepareStatement(
-					"INSERT INTO active_posts (post_id, user_id, title, category, description, thumbs_up, thumbs_down)" +
-					" VALUES(?, ?, ?, ?, ?, ?, ?)");
+					"INSERT INTO active_posts (post_id, user_id, title, category, description, thumbs_up, thumbs_down, user_type)" +
+					" VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setInt(1, Integer.parseInt(activePostId));
 			ps.setString(2, userId);
 			ps.setString(3, title);
@@ -285,6 +310,7 @@ public class Post {
 			ps.setString(5, description);
 			ps.setInt(6, 0);
 			ps.setInt(7, 0);
+			ps.setString(8, userType);
 			ps.executeUpdate();
 			ps.close();
 			
@@ -425,6 +451,14 @@ public class Post {
 	public void setThumbsUp(String thumbsUp) {
 		this.thumbsUp = TextUtils.zeroToNull(thumbsUp);
 	}
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = TextUtils.zeroToNull(userType);
+	}
+
 	public void setThumbsDown(String thumbsDown) {
 		this.thumbsDown = TextUtils.zeroToNull(thumbsDown);
 	}
