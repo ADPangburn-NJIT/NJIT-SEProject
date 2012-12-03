@@ -21,6 +21,7 @@ public class Post {
 	private String description = null;
 	private String thumbsUp = null;
 	private String thumbsDown = null;
+	private String date = null;
 	
 	private User user = new User();
 	private List errorMessage = new ArrayList();
@@ -234,8 +235,8 @@ public class Post {
 				ps.close();
 				
 				ps = con.prepareStatement(
-						"INSERT INTO pending_posts (post_id, user_id, title, category, description, user_type)" +
-						" VALUES(?, ?, ?, ?, ?, ?)");
+						"INSERT INTO pending_posts (post_id, user_id, title, category, description, user_type, date)" +
+						" VALUES(?, ?, ?, ?, ?, ?, CURDATE())");
 				ps.setInt(1, Integer.parseInt(this.postId));
 				ps.setString(2, this.userId);
 				ps.setString(3, this.title);
@@ -281,10 +282,11 @@ public class Post {
 		String category = null;
 		String description = null;
 		String userType = null;
+		String date = null;
 		
 		if (this.postId != null) {
 			ps = con.prepareStatement(
-					"SELECT post_id, user_id, title, category, description, user_type" +
+					"SELECT post_id, user_id, title, category, description, user_type, date" +
 					" FROM pending_posts" +
 					" WHERE post_id=?");
 			ps.setString(1, this.postId);
@@ -296,6 +298,7 @@ public class Post {
 				category = rs.getString("category");
 				description = rs.getString("description");
 				userType = rs.getString("user_type");
+				date = rs.getString("date");
 			}
 			rs.close();
 			ps.close();
@@ -312,8 +315,8 @@ public class Post {
 			ps.close();
 			
 			ps = con.prepareStatement(
-					"INSERT INTO active_posts (post_id, user_id, title, category, description, thumbs_up, thumbs_down, user_type)" +
-					" VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+					"INSERT INTO active_posts (post_id, user_id, title, category, description, thumbs_up, thumbs_down, user_type, comments)" +
+					" VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setInt(1, Integer.parseInt(activePostId));
 			ps.setString(2, userId);
 			ps.setString(3, title);
@@ -322,12 +325,13 @@ public class Post {
 			ps.setInt(6, 0);
 			ps.setInt(7, 0);
 			ps.setString(8, userType);
+			ps.setInt(9, 0);
 			ps.executeUpdate();
 			ps.close();
 			
 			ps = con.prepareStatement(
-					"INSERT INTO archived_posts (post_id, user_id, title, category, description, thumbs_up, thumbs_down)" +
-					" VALUES(?, ?, ?, ?, ?, ?, ?)");
+					"INSERT INTO archived_posts (post_id, user_id, title, category, description, thumbs_up, thumbs_down, date)" +
+					" VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setInt(1, Integer.parseInt(activePostId));
 			ps.setString(2, userId);
 			ps.setString(3, title);
@@ -335,6 +339,7 @@ public class Post {
 			ps.setString(5, description);
 			ps.setInt(6, 0);
 			ps.setInt(7, 0);
+			ps.setString(8, date);
 			ps.executeUpdate();
 			ps.close();
 			
@@ -363,10 +368,11 @@ public class Post {
 		String title = null;
 		String category = null;
 		String description = null;
+		String date = null;
 		
 		if (this.postId != null) {
 			ps = con.prepareStatement(
-					"SELECT post_id, user_id, title, category, description" +
+					"SELECT post_id, user_id, title, category, description, date" +
 					" FROM pending_posts" +
 					" WHERE post_id=?");
 			ps.setString(1, this.postId);
@@ -377,6 +383,7 @@ public class Post {
 				title = rs.getString("title");
 				category = rs.getString("category");
 				description = rs.getString("description");
+				date = rs.getString("date");
 			}
 			rs.close();
 			ps.close();
@@ -393,8 +400,8 @@ public class Post {
 			ps.close();
 			
 			ps = con.prepareStatement(
-					"INSERT INTO archived_posts_rejected (post_id, user_id, title, category, description, thumbs_up, thumbs_down)" +
-					" VALUES(?, ?, ?, ?, ?, ?, ?)");
+					"INSERT INTO archived_posts_rejected (post_id, user_id, title, category, description, thumbs_up, thumbs_down, date)" +
+					" VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setInt(1, Integer.parseInt(archivedPostId));
 			ps.setString(2, userId);
 			ps.setString(3, title);
@@ -402,6 +409,7 @@ public class Post {
 			ps.setString(5, description);
 			ps.setInt(6, 0);
 			ps.setInt(7, 0);
+			ps.setString(8, date);
 			ps.executeUpdate();
 			ps.close();
 			
@@ -464,6 +472,13 @@ public class Post {
 	}
 	public String getUserType() {
 		return userType;
+	}
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = TextUtils.zeroToNull(date);
 	}
 
 	public void setUserType(String userType) {

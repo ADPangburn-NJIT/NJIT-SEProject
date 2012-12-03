@@ -6,6 +6,10 @@ function showCreateSuggestionDialog() {
 	$( "#createSuggestionDialog" ).dialog({ height: 350, width: 640, modal: true });
 }
 
+function showMySuggestionsDialog() {
+	$( "#mySuggestionsDialog" ).dialog({ height: 400, width: 850, modal: true });
+}
+
 function verifyRole() {
 	var roleSelect = document.getElementById("userType");
 	if (roleSelect.options[roleSelect.selectedIndex].value == "4" || roleSelect.options[roleSelect.selectedIndex].value == "5") {
@@ -60,10 +64,13 @@ function sortByGroup(group) {
 	document.sortByGroupForm.submit();
 }
 
-function voteSuggestion(postId, vote, currentPage) {
+function voteSuggestion(postId, vote, currentPage, category, group, popularity) {
 	document.voteSuggestionForm.voteSuggestionPostId.value = postId;
 	document.voteSuggestionForm.vote.value = vote;
 	document.voteSuggestionForm.currentPage.value = currentPage;
+	document.voteSuggestionForm.sortCategory.value = category;
+	document.voteSuggestionForm.sortRole.value = group;
+	document.voteSuggestionForm.sortPopularity.value = popularity;
 	document.voteSuggestionForm.submit();
 }
 

@@ -91,7 +91,10 @@
                 	 <form name="logoutForm" id="logoutForm" method="post" action="logout">
                 	 <% if ("99".equals(user.getUserType())) { %>
                 	 	<button type="button" onclick="adminIndex();">Admin Home</button>
-               	 	<% } %>
+               	 	<% } 
+               	 		else { %>
+             	 		<button type="button" onclick="showMySuggestionsDialog();">My Suggestions</button>
+             	 	<% } %>
                         <button type="submit">Logout</button>                   
                     </form>
                 <% } %>
@@ -166,10 +169,6 @@
             </tr>
         </table>
     </div>
-    
-    <form id="sortByGroupForm" name="sortByGroupForm" method="post" action="index.jsp">
-    	<input type="hidden" value="sortGroup" name="sortGroup" />
-    </form>
    <div class="suggestionPosts">
    		<table class="suggestionPostsHeader">
    			<tr>
@@ -192,11 +191,11 @@
 		            </tr>
 		        	<tr>
 		            	 <td class="suggestionPostsDataCell" style="text-align:left">
-		            	 	 <img src="images/thumbs-up-icon-flipped.png" alt="Thumbs Up" <% if (user.getUserId() != null) { if (VerificationUtils.canVoteSuggestion(displayPost.getPostId(), user.getUserId())) { %> onclick="voteSuggestion('<%= displayPost.getPostId() %>', '1', '<%= currentPage %>');" <% } else { %> onclick="alreadyVoted('<%= displayPost.getTitle() %>');" <% } } else { %> onclick="pleaseLogin();" <% } %>/><%= displayPost.getThumbsUp() %>
+		            	 	 <img src="images/thumbs-up-icon-flipped.png" alt="Thumbs Up" <% if (user.getUserId() != null) { if (VerificationUtils.canVoteSuggestion(displayPost.getPostId(), user.getUserId())) { %> onclick="voteSuggestion('<%= displayPost.getPostId() %>', '1', '<%= currentPage %>', '<%= category %>', '<%= group %>', '<%= popularity %>');" <% } else { %> onclick="alreadyVoted('<%= displayPost.getTitle() %>');" <% } } else { %> onclick="pleaseLogin();" <% } %>/><%= displayPost.getThumbsUp() %>
 		            	 </td>
 		            	<td class="suggestionPostsTitleCell" style="text-align:center"><a href="postDetails.jsp?postId=<%= TextUtils.nullToZero(displayPost.getPostId()) %>"><%= TextUtils.nullToZero(displayPost.getTitle()) %></a></td>
 		                <td class="suggestionPostsDataCell" style="text-align:right">
-		            	 	 <%= displayPost.getThumbsDown() %><img src="images/thumbs-down-icon.png" alt="Thumbs Down" <% if (user.getUserId() != null) { if (VerificationUtils.canVoteSuggestion(displayPost.getPostId(), user.getUserId())) { %> onclick="voteSuggestion('<%= displayPost.getPostId() %>', '-1', '<%= currentPage %>');" <% } else { %> onclick="alreadyVoted('<%= displayPost.getTitle() %>');" <% } } else { %> onclick="pleaseLogin();" <% } %>/>
+		            	 	 <%= displayPost.getThumbsDown() %><img src="images/thumbs-down-icon.png" alt="Thumbs Down" <% if (user.getUserId() != null) { if (VerificationUtils.canVoteSuggestion(displayPost.getPostId(), user.getUserId())) { %> onclick="voteSuggestion('<%= displayPost.getPostId() %>', '-1', '<%= currentPage %>', '<%= category %>', '<%= group %>', '<%= popularity %>');" <% } else { %> onclick="alreadyVoted('<%= displayPost.getTitle() %>');" <% } } else { %> onclick="pleaseLogin();" <% } %>/>
 		                </td>
 		            </tr>
 		        </table>
@@ -210,7 +209,6 @@
     <br />
     <div class="footer">iSuggest System - 2012</div>
 </div>
-
 <div style="display:none;" id="registrationDialog" title="Register for iSuggest">
 	<form name="registrationForm" id="registrationForm" method="post" action="register">
 		<table id="registrationTable">
@@ -295,13 +293,91 @@
 		</table>
 	</form>
 </div>
-<form name="sortByCategoriesForm" id="sortByCategoriesForm" method="post" action="index.jsp">
-	<input type="hidden" name="sortCategory" id="sortCategory" />
-</form>
 <form name="voteSuggestionForm" id="voteSuggestionForm" method="post" action="voteSuggestion">
 	<input type="hidden" name="currentPage" id="currentPage" />
 	<input type="hidden" name="voteSuggestionPostId" id="voteSuggestionPostId" />
 	<input type="hidden" name="vote" id="vote" />
+	<input type="hidden" name="sortCategory" id="sortCategory" />
+	<input type="hidden" name="sortRole" id="sortRole" />
+	<input type="hidden" name="sortPopularity" id="sortPopularity" />
 </form>
+
+<div id="mySuggestionsDialog" style="display:none;" title="My Suggestions" style="overflow:auto;">
+	<table class="myRejectedSuggestionsTable">
+		<tr>
+			<th colspan="3">Rejected Suggestions</th>
+		</tr>
+		<tr>
+			<th>Title</th>
+			<th>Description</th>
+			<th>Date Submitted</th>
+		</tr>
+		<% for (int i = 0; i < VerificationUtils.getMyRejectedSuggestions(user.getUserId()).size(); i++) { 
+		Post p = (Post)VerificationUtils.getMyRejectedSuggestions(user.getUserId()).get(i);
+		%>
+			<tr>
+				<td>
+					<%= p.getTitle() %>
+				</td>
+				<td>
+				<% 
+					if (p.getDescription().length() > 10) { 
+				%>
+					<%= p.getDescription().substring(0, 10) %>
+				<% }
+					else {
+				%>
+					<%= p.getDescription() %>
+				<%
+					}
+				%>
+				</td>
+				<td>
+					<%= p.getDate() %>
+				</td>
+			</tr>
+		<% } %>
+	</table>
+	<table class="myActiveSuggestionsTable">
+		<tr>
+			<th colspan="4">Active Suggestions</th>
+		</tr>
+		<tr>
+			<th>Title</th>
+			<th>Description</th>
+			<th>Date Submitted</th>
+			<th>Go To Post</th>
+		</tr>
+		<% for (int i = 0; i < VerificationUtils.getMyAcceptedSuggestions(user.getUserId()).size(); i++) { 
+		Post p = (Post)VerificationUtils.getMyAcceptedSuggestions(user.getUserId()).get(i);
+		%>
+			<tr>
+				<td>
+					<%= p.getTitle() %>
+				</td>
+				<td>
+				<% 
+					if (p.getDescription().length() > 10) { 
+				%>
+					<%= p.getDescription().substring(0, 10) + " ... " %>
+				<% }
+					else {
+				%>
+					<%= p.getDescription() %>
+				<%
+					}
+				%>
+				</td>
+				<td>
+					<%= p.getDate() %>
+				</td>
+				<td>
+					<a href="postDetails.jsp?postId=<%= p.getPostId() %>">Click Here</a>
+				</td>
+			</tr>
+		<% } %>
+	</table>
+	
+</div>
 </body>
 </html>
