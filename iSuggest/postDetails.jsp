@@ -15,10 +15,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>iSuggest</title>
 	<link href="css/postDetails.css" rel="stylesheet" type="text/css" />
-	<link href="css/redmond/jquery-ui-1.9.1.custom.css" rel="stylesheet" type="text/css" />
+	<link href="css/custom-theme/jquery-ui-1.9.2.custom.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="js/index.js"></script>
-	<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.9.1.custom.js"></script>
+	<script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.js"></script>
 	<script>
 	<% if (generalMessage.size() > 0) { %>
 			 $(function() {
@@ -49,6 +49,11 @@
 			 });
 	 <% } %>
     </script>
+     <script>
+	  $(document).ready(function() {
+	    $("button").button();
+	  });
+  	</script>
 </head>
 
 <% 
@@ -62,16 +67,11 @@
     <div class="header">
         <table>
             <tr>
-                <td class="logoCell">
-                    <img src="images/faberLogo.png" alt="iSuggest logo this website can make suggestions for university" width="85" height="65" />
-                </td>
-                <td class="titleCell">
-                    <h1>iSuggest</h1>
-              	</td>
+            	<td><img src="images/isuggest_banner.png"></img></td>
                 <td class="loginCell">
                 <% if (user.getUserId() == null) { %>
                     <form name="loginForm" id="loginForm" method="post" action="login">
-                        Email: <input type="text" name="emailAddr" id="emailAddr" size="15" maxlength="60" />
+                        Email: <input type="text" name="emailAddr" id="emailAddr" size="13" maxlength="60" onclick="this.select()" />
                         Password: <input type="password" name="password" id="password" size="10" maxlength="32" /><br />
                         <button type="button" onclick="showRegistrationBox();">Register</button>
                         <button type="submit">Login</button>                   
@@ -80,6 +80,13 @@
                 else { %>
                 	Logged in as <%= user.getEmailAddr() %>.
                 	 <form name="logoutForm" id="logoutForm" method="post" action="logout">
+                	 <% if ("99".equals(user.getUserType())) { %>
+                	 	<button type="button" onclick="adminIndex();">Admin Home</button>
+               	 	<% } 
+               	 		else {
+              	 	%>
+              	 			<button type="button" onclick="home();">Home</button>
+              	 	<% } %>
                         <button type="submit">Logout</button>                   
                     </form>
                 <% } %>
@@ -88,67 +95,46 @@
         </table>
     </div>
 
-    <div class="suggestionsByCategory"> 
+    <div class="subHeaderContent"> 
 		<button class="createSuggestionButton" type="button" <% if (user.getUserId() == null) { %> disabled="disabled" <% } %>onclick="showCreateSuggestionDialog();">Create A Suggestion</button>       
-        <table>
+        <table style="margin-left:310px;">
             <tr>
                 <td class="searchCell">
                     <form name="searchForm" id="searchForm" method="post" action="index.jsp">
-                      <input style="font-size:20px;" type="text" value="Search" name="search" id="search" size="40" maxlength="80" />
+                      <input style="font-size:20px;" type="text" id="search" name="search" size="35" maxlength="80" />
                     </form>
                 </td>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Facilities');">Facilities</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Activities');">Activities</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Entertainment');">Entertainment</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Commuting');">Commuting</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Campus Life');">Campus Life</button>
+                <td>
+                	<img src="images/icon-search-small.png" onclick="document.searchForm.submit();"/>
                 </td>
             </tr>
         </table>
     </div>
 
-   <div class="suggestionPosts">
-   		<table class="suggestionPostsTable">
-        	<tr>
-            	<td>
-                	<h2 class="suggestionPostsHeader"><%= comments.getPost().getTitle() %></h2>
-                </td>
-            </tr>
-            <tr>
-            	<td>
-                	 <h2 class="commentDescription"><%= comments.getPost().getDescription() %></h2>
-                </td>
-                
-           	</tr>
-        </table>
+   	<div class="suggestionPosts">
+   		<p class="suggestionTitle">
+   			<%= comments.getPost().getTitle() %> <br />
+   			Submitted by - <%= comments.getPost().getUser().getEmailAddr() + " (" + comments.getPost().getUser().getFirstName() + " " + comments.getPost().getUser().getLastName() + " - " + comments.getPost().getUser().getRole() + ")" %>
+   		</p>
+   		<p class="suggestionDetails">
+   			<%= comments.getPost().getDescription() %>
+   		</p>
     </div>
     <div class="leaveComment">
     	<button type="button"  <% if (user.getUserId() == null) { %> disabled="disabled" <% } %> onclick="showLeaveCommentBox();">Leave Comment</button>
     </div>
     <div class="commentsSection">
-   		<table>
+   		
         	<% for (int i = 0; i < activeComments.size(); i++) {
         		Comments comment = (Comments)activeComments.get(i);
         	%>
+       		<table <% if (i % 2 == 1) { %>class="commentsOdd" <% } else { %> class="commentsEven" <% } %>>
         		<tr>
-        			<td><%= comment.getCommentText() %></td>
-        			<td><%= comment.getUser().getFirstName() + " " + comment.getUser().getLastName() %></td>
+        			<td><i><%= comment.getCommentText() %></i> <br /> by <%= comment.getUser().getFirstName() + " " + comment.getUser().getLastName() + " (" + comment.getUser().getRole() + ")" %></td>
         		</tr>
+       		 </table>
         	<% } %>
-        </table>
+       
     </div>
     <div class="footer">iSuggest System - 2012</div>
 </div>
@@ -175,7 +161,7 @@
 			<tr>
 				<td>Role</td>
 				<td>
-					<select id="userType" name="userType" onchange="verifyRole();">
+					<select id="userType" name="userType">
 						<option value="1" selected="selected">Undergrad</option>
 						<option value="2">Graduate</option>
 						<option value="3">Alumni</option>

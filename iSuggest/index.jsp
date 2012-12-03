@@ -10,14 +10,17 @@
 	<%@ page import="Utils.VerificationUtils" %>
 	<%@ page import="java.util.ArrayList" %>
 	<%@ page import="DataStructures.Post" %>
+	<%@ page import="DataStructures.Category" %>
+	<%@ page import="DataStructures.Role" %>
+	
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>iSuggest</title>
 	<link href="css/index.css" rel="stylesheet" type="text/css" />
-	<link href="css/redmond/jquery-ui-1.9.1.custom.css" rel="stylesheet" type="text/css" />
+	<link href="css/custom-theme/jquery-ui-1.9.2.custom.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="js/index.js"></script>
-	<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.9.1.custom.js"></script>
+	<script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.js"></script>
 	<script>
 	<% if (generalMessage.size() > 0) { %>
 			 $(function() {
@@ -48,18 +51,23 @@
 			 });
 	 <% } %>
     </script>
-</head>
-
+   <script>
+	  $(document).ready(function() {
+	    $("button").button();
+	  });
+  </script>
+ </head>
 <% 
 	int currentPage = 1;
 	String category = request.getParameter("sortCategory");
 	String search = request.getParameter("search");
-	String group = request.getParameter("sortGroup");
+	String popularity = request.getParameter("sortPopularity");
+	String group = request.getParameter("sortRole");
 	ArrayList activePosts = new ArrayList();
-	activePosts = post.getActiveSuggestions(currentPage, category, search, group);
+	activePosts = post.getActiveSuggestions(currentPage, category, group, popularity, search);
 	if (request.getParameter("page") != null) { 
 		currentPage = Integer.parseInt(request.getParameter("page"));
-		activePosts = post.getActiveSuggestions(currentPage, category, search, group);
+		activePosts = post.getActiveSuggestions(currentPage, category, group, popularity, search);
 	}
 %>
 
@@ -68,16 +76,11 @@
     <div class="header">
         <table>
             <tr>
-                <td class="logoCell">
-                    <img src="images/faberLogo.png" alt="iSuggest logo this website can make suggestions for university" width="85" height="65" />
-                </td>
-                <td class="titleCell">
-                    <h1>iSuggest</h1>
-              	</td>
+            	<td><img src="images/isuggest_banner.png"></img></td>
                 <td class="loginCell">
                 <% if (user.getUserId() == null) { %>
                     <form name="loginForm" id="loginForm" method="post" action="login">
-                        Email: <input type="text" name="emailAddr" id="emailAddr" size="15" maxlength="60" onclick="this.select()" />
+                        Email: <input type="text" name="emailAddr" id="emailAddr" size="13" maxlength="60" onclick="this.select()" />
                         Password: <input type="password" name="password" id="password" size="10" maxlength="32" /><br />
                         <button type="button" onclick="showRegistrationBox();">Register</button>
                         <button type="submit">Login</button>                   
@@ -97,78 +100,85 @@
         </table>
     </div>
 
-    <div class="suggestionsByCategory"> 
-		<button class="createSuggestionButton" type="button" <% if (user.getUserId() == null) { %> disabled="disabled" <% } %>onclick="showCreateSuggestionDialog();">Create A Suggestion</button>       
-        <table>
+    <div class="subHeaderContent"> 
+		<button class="createSuggestionButton" type="button" <% if (user.getUserId() == null) { %> onclick="pleaseLogin();" <% } %>onclick="showCreateSuggestionDialog();">Create A Suggestion</button>       
+        <form name="sortForm" id="sortForm" method="post" action="index.jsp">
+        	<table class="categorySortTable">
+		       	<tr>
+		       		<th style="background-color:#CCCCFF" colspan="3">Filtering</th>
+		       	</tr>
+		       	<tr>
+		       		<th style="background-color:#CCCCFF">Categories</th>
+		       		<th style="background-color:#CCCCFF">Groups</th>
+		       		<th style="background-color:#CCCCFF">Arrange By</th>
+		       	</tr>
+		       	<tr>
+		       		<td>
+		       			 <select id="sortCategory" name="sortCategory">
+		        			<option value="All" <% if (request.getParameter("sortCategory") == null || "All".equals(request.getParameter("sortCategory"))) { %> selected="selected" <% } %>>All</option>
+				        	<% for (int i = 0; i < VerificationUtils.getCategories().size(); i++) { 
+								Category categoryList = (Category)VerificationUtils.getCategories().get(i);
+							%>
+								<option value="<%= categoryList.getCategory() %>" <% if (categoryList.getCategory().equals(request.getParameter("sortCategory"))) { %> selected="selected" <% } %>><%= categoryList.getCategory() %></option>
+							<% } %>
+				        </select>
+		       		</td>
+		       		<td>
+		       			 <select id="sortRole" name="sortRole">
+		        			<option value="All" <% if (request.getParameter("sortRole") == null || "All".equals(request.getParameter("sortRole"))) { %> selected="selected" <% } %>>All</option>
+				        	<% for (int i = 0; i < VerificationUtils.getRoles().size(); i++) { 
+								Role roleList = (Role)VerificationUtils.getRoles().get(i);
+							%>
+								<option value="<%= roleList.getRoleId() %>" <% if (roleList.getRoleId().equals(request.getParameter("sortRole"))) { %> selected="selected" <% } %>><%= roleList.getRole() %></option>
+							<% } %>
+				        </select>
+		       		</td>
+		       		<td>
+		       			<select id="sortPopularity" name="sortPopularity">
+			       			<option value="BestSuggestion" <% if (request.getParameter("sortPopularity") == null || "BestSuggestion".equals(request.getParameter("sortPopularity"))) { %> selected="selected" <% } %>>Best Suggestion</option>
+			       			<option value="WorstSuggestion" <% if ("WorstSuggestion".equals(request.getParameter("sortPopularity"))) { %> selected="selected" <% } %>>Worst Suggestion</option>
+		       				<option value="MostCommented" <% if ("MostCommented".equals(request.getParameter("sortPopularity"))) { %> selected="selected" <% } %>>Most Commented</option>
+		       			</select>
+		       		</td>
+		       	</tr>
+		       	<tr>
+		       		<td colspan="3">
+		       		    <button type="submit">Filter</button>
+		       		</td>
+		       	</tr>
+        	</table>
+        </form>
+        <table class="searchTable">
             <tr>
-                <td class="searchCell">
+            	<th style="background-color:#CCCCFF" colspan="2">Search</th>
+            </tr>
+            <tr>
+                <td>
                     <form name="searchForm" id="searchForm" method="post" action="index.jsp">
-                      <input style="font-size:20px;" type="text" value="Search" id="search" name="search" size="40" maxlength="80" />
+                      <input style="font-size:20px;" type="text" id="search" name="search" size="30" maxlength="80" />
                     </form>
                 </td>
             </tr>
-        </table>
-        <table>
             <tr>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Facilities');">Facilities</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Activities');">Activities</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Entertainment');">Entertainment</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Commuting');">Commuting</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Campus Life');">Campus Life</button>
-                </td>
+            	<td>
+            		<button type="button" onclick="document.searchForm.submit();">Search</button>
+            	</td>
             </tr>
         </table>
     </div>
     
-    <div class="suggestionsByRoles">
-        <h3 style="font-size:15px; text-align:center;">Sort by Group</h3>
-        <table>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button" onclick="window.location='index.jsp'">All</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button" onclick="sortByGroup('1');">Undergrads</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button" onclick="sortByGroup('2');">Grad</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button" onclick="sortByGroup('3');">Alumni</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button" onclick="sortByGroup('4');">Staff</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="sortByGroupCell">
-                    <button type="button" onclick="sortByGroup('5');">Faculty</button>
-                </td>
-            </tr>
-        </table>
-    </div>
     <form id="sortByGroupForm" name="sortByGroupForm" method="post" action="index.jsp">
     	<input type="hidden" value="sortGroup" name="sortGroup" />
     </form>
    <div class="suggestionPosts">
-       	<h1 class="suggestionPostsHeader"><% if (currentPage > 1) { %><a href="index.jsp?page=<%= currentPage - 1 %>&sortCategory=<%= category %>&search=<%= search %>&sortGroup=<%= group %>"> <- </a><% } %> -- Newest Suggestions -- <a href="index.jsp?page=<%= currentPage + 1 %>&sortCategory=<%= category %>&search=<%= search %>&sortGroup=<%= group %>"> -></a></h1>
+   		<table class="suggestionPostsHeader">
+   			<tr>
+   				<td <% if (currentPage > 1) { %> style="padding-right:230px;" <% } else { %> style="padding-right:265px;" <% } %>><% if (currentPage > 1) { %><a href="index.jsp?page=<%= currentPage - 1 %>&sortCategory=<%= category %>&search=<%= search %>&sortRole=<%= group %>&sortPopularity=<%= popularity %>"><img src="images/arrow_left.png" title="Back" /></a><% } %></td>
+   				<td style="font-size:25px;">Newest Suggestions</td>
+   				<td style="padding-left:230px;"><a href="index.jsp?page=<%= currentPage + 1 %>&sortCategory=<%= category %>&search=<%= search %>&sortRole=<%= group %>&sortPopularity=<%= popularity %>"><img src="images/arrow_right.png" title="Next"/></a></td>
+   			</tr>
+   		
+   		</table>
     	<% 
     	if (activePosts.size() > 0) {
 	    	for (int i = 0; i < activePosts.size(); i++) { 
@@ -223,7 +233,7 @@
 			<tr>
 				<td>Role</td>
 				<td>
-					<select id="userType" name="userType" onchange="verifyRole();">
+					<select id="userType" name="userType">
 						<option value="1" selected="selected">Undergrad</option>
 						<option value="2">Graduate</option>
 						<option value="3">Alumni</option>
@@ -231,10 +241,6 @@
 						<option value="5">Faculty</option>
 					</select>
 				</td>
-			</tr>
-			<tr id="hiddenRow" style="display:none;">
-				<td>Verification</td>
-				<td><input type="text" name="verification" id="verification" size="30" maxlength="20" value="Enter Empoyee ID" onclick="this.select()" /></td>
 			</tr>
 			<tr>
 				<td><button onclick="register();">Register</button></td>
@@ -271,11 +277,11 @@
 				<td>Category</td>
 				<td>
 					<select id="category" name="category">
-						<option value="Facilities">Facilities</option>
-						<option value="Activities">Activities</option>
-						<option value="Entertainment">Entertainment</option>
-						<option value="Communting">Commuting</option>
-						<option value="Campus Life">Campus Life</option>
+						<% for (int i = 0; i < VerificationUtils.getCategories().size(); i++) { 
+							Category submissionCategoryList = (Category)VerificationUtils.getCategories().get(i);
+						%>
+							<option value="<%= submissionCategoryList.getCategory() %>"><%= submissionCategoryList.getCategory() %></option>
+						<% } %>
 					</select>
 				</td>
 			</tr>

@@ -54,6 +54,27 @@ public class Comments {
 			ps.setInt(6, 0);
 			ps.executeUpdate();
 			ps.close();
+			
+			//Update our comment count on this thread to help facilitate sorting
+			int comments = 0;
+			ps = con.prepareStatement(
+					"SELECT comments" +
+					" FROM active_posts" +
+					" WHERE post_id=?");
+			ps.setString(1, this.postId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				comments = rs.getInt("comments") + 1;
+			}
+			
+			ps = con.prepareStatement(
+					"UPDATE active_posts" +
+					" SET comments=?" +
+					" WHERE post_id=?");
+			ps.setInt(1, comments);
+			ps.setString(2, this.postId);
+			ps.executeUpdate();
+			ps.close();
 		}
 		else {
 			if (this.commentText == null) {
@@ -106,6 +127,37 @@ public class Comments {
 		rs.close();
 		ps.close();
 		
+		User op = new User();
+		ps = con.prepareStatement(
+				"SELECT email_addr, first_name, last_name, user_type" +
+				" FROM user" +
+				" WHERE user_id=?");
+		ps.setString(1, post.getUserId());
+		rs = ps.executeQuery();
+		if (rs.next()) {
+			op.setEmailAddr(rs.getString("email_addr"));
+			op.setFirstName(rs.getString("first_name"));
+			op.setLastName(rs.getString("last_name"));
+			op.setUserType(rs.getString("user_type"));
+		}
+		rs.close();
+		ps.close();
+		
+		//Get the string role of the user
+		ps = con.prepareStatement(
+				"SELECT role" +
+				" FROM user_roles" +
+				" WHERE role_id=?");
+		ps.setString(1, op.getUserType());
+		rs = ps.executeQuery();
+		if (rs.next()) {
+			op.setRole(rs.getString("role"));
+		}
+		rs.close();
+		ps.close();
+		
+		post.setUser(op);
+		
 		/*Now that we have the relevant post data, we need to loop through it to get the user data that corresponds with the
 		 * user_id grabbed from `active_posts` and match it with the one in `user`
 		 */
@@ -122,6 +174,18 @@ public class Comments {
 				user.setFirstName(rs.getString("first_name"));
 				user.setLastName(rs.getString("last_name"));
 				user.setUserType(rs.getString("user_type"));
+			}
+			rs.close();
+			ps.close();
+			
+			ps = con.prepareStatement(
+					"SELECT role" +
+					" FROM user_roles" +
+					" WHERE role_id=?");
+			ps.setString(1, user.getUserType());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				user.setRole(rs.getString("role"));
 			}
 			rs.close();
 			ps.close();

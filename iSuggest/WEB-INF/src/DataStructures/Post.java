@@ -129,29 +129,40 @@ public class Post {
 		return pendingPosts;
 	}
 	
-	public ArrayList getActiveSuggestions(int page, String category, String search, String group) throws SQLException, UnsupportedEncodingException {
+	public ArrayList getActiveSuggestions(int page, String category, String group, String popularity, String search) throws SQLException, UnsupportedEncodingException {
 		//Database connection stuff
 		con = db.connectToDatabase();
 		int startPost = (page * 6) - 5; //6 posts per page
 		int endPost = page * 6; //6 Posts per page
 		int postCount = 1;
 		ArrayList activePosts = new ArrayList();
+		
 		//Get the relevant post data.
 		String query = "SELECT post_id, user_id, title, thumbs_up, thumbs_down" +
-				" FROM active_posts";
-		if (category != null && !"null".equals(category)) {
-			query += " WHERE category='" + category + "'";
+				" FROM active_posts" +
+				" WHERE 1=1";
+		if (category != null && !"null".equals(category) && !"All".equals(category)) {
+			query += " AND category='" + category + "'";
 		}
-		else if (search != null && !"null".equals(search)) {
+		if (search != null && !"null".equals(search)) {
 			System.out.println(search);
-			query += " WHERE title LIKE " + "'%" + URLEncoder.encode(search, "UTF-8") + "%'";
+			query += " AND title LIKE " + "'%" + URLEncoder.encode(search, "UTF-8") + "%'";
 		}
-		else if (group != null && !"null".equals(group)) {
-			query += " WHERE user_type='" + group + "'"; 
+		if (group != null && !"null".equals(group) && !"All".equals(group)) {
+			query += " AND user_type='" + group + "'"; 
 		}
-		else {
-			query += " WHERE 1=1";
+		if (popularity != null && !"null".equals(popularity) && !"All".equals(popularity)) {
+			if ("BestSuggestion".equals(popularity)) {
+				query += " ORDER BY thumbs_up DESC"; 
+			}
+			else if ("WorstSuggestion".equals(popularity)) {
+				query += " ORDER BY thumbs_down DESC"; 
+			}
+			else if ("MostCommented".equals(popularity)) {
+				query += " ORDER BY comments DESC"; 
+			}
 		}
+		System.out.println(query);
 		ps = con.prepareStatement(query);
 		rs = ps.executeQuery();
 		while (rs.next()) {

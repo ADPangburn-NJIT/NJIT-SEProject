@@ -48,7 +48,9 @@ function confirmReject(postId) {
 	}
 }
 
-function sortByCategory(category) {
+function sortByCategory() {
+	var e = document.getElementById("sortByCategories");
+	var category = e.options[e.selectedIndex].value;
 	document.getElementById("sortCategory").value = category;
 	document.sortByCategoriesForm.submit();
 }
@@ -79,4 +81,13 @@ function suggestionIndex() {
 }
 function adminIndex() {
 	window.location = "adminIndex.jsp";
+}
+function home() {
+	window.location = "index.jsp";
+}
+function showCategoriesMenu() {
+	document.getElementById("categoriesMenu").style.display="";
+}
+function hideCategoriesMenu() {
+	document.getElementById("categoriesMenu").style.display="none";
 }

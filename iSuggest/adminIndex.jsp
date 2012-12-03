@@ -13,10 +13,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>iSuggest</title>
 	<link href="css/adminIndex.css" rel="stylesheet" type="text/css" />
-	<link href="css/redmond/jquery-ui-1.9.1.custom.css" rel="stylesheet" type="text/css" />
+	<link href="css/custom-theme/jquery-ui-1.9.2.custom.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="js/index.js"></script>
-	<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.9.1.custom.js"></script>
+	<script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.js"></script>
 	<script>
 	<% if (generalMessage.size() > 0) { %>
 			 $(function() {
@@ -50,6 +50,7 @@
     <script>
     $(function() {
         $( "#pendingPostsList" ).accordion();
+        $("button").button();
     });
     </script>
 </head>
@@ -70,12 +71,7 @@
     <div class="header">
         <table>
             <tr>
-                <td class="logoCell">
-                    <img src="images/faberLogo.png" alt="iSuggest logo this website can make suggestions for university" width="85" height="65" />
-                </td>
-                <td class="titleCell">
-                    <h1>iSuggest</h1>
-              	</td>
+                <td><img src="images/isuggest_banner.png"></img></td>
                 <td class="loginCell">
                 <% if (user.getUserId() == null) { %>
                     <form name="loginForm" id="loginForm" method="post" action="login">
@@ -97,38 +93,9 @@
         </table>
     </div>
 
-    <div class="suggestionsByCategory"> 
-		Administrator Page
-        <table>
-            <tr>
-                <td class="searchCell">
-                </td>
-            </tr>
-        </table>
-        <table>
-             <tr>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Facilities');">Facilities</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Activities');">Activities</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Entertainment');">Entertainment</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Commuting');">Commuting</button>
-                </td>
-                <td class="sortByCategoriesCell">
-                    <button type="button" onclick="sortByCategory('Campus Life');">Campus Life</button>
-                </td>
-            </tr>
-        </table>
+   <div class="subHeaderContent">
+    	<h1>Pending Suggestions</h1>
     </div>
-   <div class="suggestionPosts">
-    	<h1 class="suggestionPostsHeader">Pending Suggestions</h1>
-    </div>
-    
     <div class="pendingPostsList" id="pendingPostsList" style="padding-left: 11px">
 		<% for (int i = 0; i < pendingPosts.size(); i++) { 
     		Post displayPost = (Post)pendingPosts.get(i);
@@ -144,7 +111,6 @@
                 </p>
             </div>
 		<% } %>
- 
     </div>
     <div class="footer">iSuggest System - 2012</div>
 </div>
@@ -179,7 +145,7 @@
 			<tr>
 				<td>Role</td>
 				<td>
-					<select id="userType" name="userType" onchange="verifyRole();">
+					<select id="userType" name="userType">
 						<option value="1" selected="selected">Undergrad</option>
 						<option value="2">Graduate</option>
 						<option value="3">Alumni</option>

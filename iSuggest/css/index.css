@@ -1,66 +1,57 @@
 @charset "utf-8";
+
+a:link {text-decoration:none;}
+a:visited {} 
+a:hover {}   
+a:active {}
+
+body {
+	margin-top: 50px;
+	background-image: url(../images/faberback4.png); 
+	background-repeat:no-repeat;
+	background-size: 100%;
+	font-size: 12px;
+	font-family:tahoma;
+}
 .styles {
 	background-color: #00FF66;
 }
 .content {
-	background-color: #CCCCCC;
-	height: 768px;
+	background-color: #626ad0;
+	height: 800px;
 	width: 1024px;
-	border: thin solid #FF0000;
+	border: thin solid #D19405;
 	margin: auto;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
 }
 .content .header {
-	background-color: #CCCCCCC;
+	color: #FECE2F;
+	font-weight: bold;
 	width: 1000px;
-	height: 90px;
+	height: 113px;
 	background-position: center center;
 	margin-right: auto;
 	margin-left: auto;
 	margin-top: 5px;
-	border-top-style: none;
-	border-right-style: none;
-	border-bottom-style: none;
-	border-left-style: none;
-	border-top-color: #000000;
-	border-right-color: #000000;
-	border-bottom-color: #000000;
-	border-left-color: #000000;
 }
 .content .header table {
 	width: 1000px;
 	height: 100px;
-	border-top-style: none;
-	border-right-style: none;
-	border-bottom-style: none;
-	border-left-style: none;
-	border-top-color: #F00;
-	border-right-color: #F00;
-	border-bottom-color: #F00;
-	border-left-color: #F00;
-}
-.logoCell {
-	padding-top: 0px;
-	padding-right: 0px;
-	padding-bottom: 0px;
-	padding-left: 0px;
-	margin: 0px;
-
 }
 .content .suggestionPosts .suggestionPostsHeader {
-	text-align: left;
-	margin-left: 200px;
+	margin-left:40px;
 }
 .suggestionPostsTable {
-	margin-left: 0px;
+	margin-left: auto;
+	margin-right: auto;
 	margin-bottom: 5px;
 	border: thin groove #000000;
 	width: 750px;
 	background-color: #CCCCFF;
 }
-.suggestionPostsDataCell {
-}
 .suggestionPostsTitleCell {
-	font-size: 30px;
+	font-size: 25px;
 }
 .titleCell {
 	text-align: right;
@@ -75,75 +66,73 @@
 	width: 446px;
 	vertical-align: top;
 }
-.searchCell {
-	height: 20px;
-	text-align: center;
-	width: 1000px;
-}
-.sortByCategoriesCell {
-	height: 30px;
-	width: 200px;
-	text-align: center;
-	padding-top: 5px;
-}
-.content .suggestionsByCategory table tr .sortByCategoriesCell button {
+.content .subHeaderContent table tr .sortByCategoriesCell button {
 	height: 28px;
 	width: 140px;
 }
-.content .suggestionsByCategory {
-	background-color: #CCCCFF;
-	height: 115px;
+.content .subHeaderContent {
+	background-color: #feeebd;
+	height: 145px;
 	width: 1000px;
 	margin-right: auto;
 	margin-left: auto;
 	border: thin solid #000000;
 	text-align: center;
-	margin-bottom: 10px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+}
+.categorySortTable {
+	float:left;
+	background-color: #626ad0;
+	margin-top:3px;
+	margin-left:150px;
+	margin-right:auto;
+	margin-bottom:2px;
+	border: thin solid #000000;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+.categorySortTable th {
+	border: 1px solid;
+}
+.searchTable {
+	float:right;
+	margin-right:150px;
+	margin-top:2px;
+	margin-bottom:auto;
+	background-color: #626ad0;
+	border: 1px solid;
+	height:105px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+.searchTable th {
+	border: 1px solid;
 }
 .createSuggestionButton {
 	width: 155px;
 	height: 30px;
 	margin-top: 3px;
 }
-.content .suggestionsByRoles {
-	background-color: #CCCCFF;
-	float: left;
-	height: 522px;
-	width: 150px;
-	margin-left: 11px;
-	border: thin solid #000000;
-}
 .content .suggestionPosts {
-	background-color: #CCCCCC;
-	float: right;
-	height: 522px;
-	width: 841px;
-	margin-right: 11px;
-	border-top-style: none;
-	border-right-style: none;
-	border-bottom-style: none;
-	border-left-style: none;
-	border-top-color: #000000;
-	border-right-color: #000000;
-	border-bottom-color: #000000;
-	border-left-color: #000000;
+	border: thin solid #feeebd;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	background-color: #feeebd;
+	height: 475px;
+	width: 850px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:20px;
 }
 .content .footer {
-	background-color: #CCCCC;
+	font-size: 15px;
+	color: #FECE2F;
 	height: 20px;
 	width: 1000px;
 	float: none;
 	margin-left: auto;
-	clear: both;
 	margin-right: auto;
-	border-top-width: thin;
-	border-right-width: thin;
-	border-bottom-width: thin;
-	border-left-width: thin;
-	border-top-color: #000000;
-	border-right-color: #000000;
-	border-bottom-color: #000000;
-	border-left-color: #000000;
 	text-align: center;
 }
 .sortByGroupCell {
