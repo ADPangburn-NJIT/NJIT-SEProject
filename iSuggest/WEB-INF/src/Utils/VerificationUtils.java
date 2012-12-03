@@ -41,6 +41,10 @@ public class VerificationUtils {
 		rs.close();
 		ps.close();
 		
+		if (con != null) {
+			con.close();
+		}
+		
 		return myPosts;
 	}
 	
@@ -72,6 +76,10 @@ public class VerificationUtils {
 		rs.close();
 		ps.close();
 		
+		if (con != null) {
+			con.close();
+		}
+		
 		return myPosts;
 	}
 	
@@ -102,6 +110,10 @@ public class VerificationUtils {
 		rs.close();
 		ps.close();
 		
+		if (con != null) {
+			con.close();
+		}
+		
 		return myPosts;
 	}
 	
@@ -129,6 +141,10 @@ public class VerificationUtils {
 		rs.close();
 		ps.close();
 		
+		if (con != null) {
+			con.close();
+		}
+		
 		return categories;
 	}
 	
@@ -155,6 +171,10 @@ public class VerificationUtils {
 		}
 		rs.close();
 		ps.close();
+		
+		if (con != null) {
+			con.close();
+		}
 		
 		return roles;
 	}
