@@ -30,51 +30,55 @@ public class Comments {
 	public void postComment() throws SQLException {
 		//Database connection stuff
 		con = db.connectToDatabase();
-		
 		if (commentText != null && commentText.length() <= 150) {
-			ps = con.prepareStatement(
-					"SELECT MAX(comment_id) AS comment_id" +
-					" FROM comments" +
-					" WHERE 1=1;");
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				this.commentId = Integer.toString(rs.getInt("comment_id") + 1);
+			if (TextUtils.bannedWords(commentText) == false) {
+				ps = con.prepareStatement(
+						"SELECT MAX(comment_id) AS comment_id" +
+						" FROM comments" +
+						" WHERE 1=1;");
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					this.commentId = Integer.toString(rs.getInt("comment_id") + 1);
+				}
+				rs.close();
+				ps.close();
+				
+				ps = con.prepareStatement(
+						"INSERT INTO comments (comment_id, post_id, user_id, comment_text, thumbs_up, thumbs_down)" +
+						" VALUES (?, ?, ?, ?, ?, ?)");
+				ps.setInt(1, Integer.parseInt(this.commentId));
+				ps.setInt(2, Integer.parseInt(this.postId));
+				ps.setInt(3, Integer.parseInt(this.userId));
+				ps.setString(4, this.commentText);
+				ps.setInt(5, 0);
+				ps.setInt(6, 0);
+				ps.executeUpdate();
+				ps.close();
+				
+				//Update our comment count on this thread to help facilitate sorting
+				int comments = 0;
+				ps = con.prepareStatement(
+						"SELECT comments" +
+						" FROM active_posts" +
+						" WHERE post_id=?");
+				ps.setString(1, this.postId);
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					comments = rs.getInt("comments") + 1;
+				}
+				
+				ps = con.prepareStatement(
+						"UPDATE active_posts" +
+						" SET comments=?" +
+						" WHERE post_id=?");
+				ps.setInt(1, comments);
+				ps.setString(2, this.postId);
+				ps.executeUpdate();
+				ps.close();
 			}
-			rs.close();
-			ps.close();
-			
-			ps = con.prepareStatement(
-					"INSERT INTO comments (comment_id, post_id, user_id, comment_text, thumbs_up, thumbs_down)" +
-					" VALUES (?, ?, ?, ?, ?, ?)");
-			ps.setInt(1, Integer.parseInt(this.commentId));
-			ps.setInt(2, Integer.parseInt(this.postId));
-			ps.setInt(3, Integer.parseInt(this.userId));
-			ps.setString(4, this.commentText);
-			ps.setInt(5, 0);
-			ps.setInt(6, 0);
-			ps.executeUpdate();
-			ps.close();
-			
-			//Update our comment count on this thread to help facilitate sorting
-			int comments = 0;
-			ps = con.prepareStatement(
-					"SELECT comments" +
-					" FROM active_posts" +
-					" WHERE post_id=?");
-			ps.setString(1, this.postId);
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				comments = rs.getInt("comments") + 1;
+			else {
+				this.errorMessage.add("Please sanitize your language.");
 			}
-			
-			ps = con.prepareStatement(
-					"UPDATE active_posts" +
-					" SET comments=?" +
-					" WHERE post_id=?");
-			ps.setInt(1, comments);
-			ps.setString(2, this.postId);
-			ps.executeUpdate();
-			ps.close();
 		}
 		else {
 			if (this.commentText == null) {
@@ -91,19 +95,34 @@ public class Comments {
 		}
 	}
 	
+	public void deleteComment() throws SQLException {
+		//Database connection stuff
+		con = db.connectToDatabase();
+		
+		ps = con.prepareStatement(
+				"DELETE FROM comments" +
+				" WHERE comment_id=? AND post_id=?");
+		ps.setString(1, this.commentId);
+		ps.setString(2, this.postId);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
 	public ArrayList getActiveComments(int postId) throws SQLException {
 		//Database connection stuff
 		con = db.connectToDatabase();
 		ArrayList activeComments = new ArrayList();
 		//Get the relevant post data.
 		ps = con.prepareStatement(
-				"SELECT comment_text, user_id, thumbs_up, thumbs_down" +
+				"SELECT post_id, comment_id, comment_text, user_id, thumbs_up, thumbs_down" +
 				" FROM comments" +
 				" WHERE post_id=?");
 		ps.setInt(1, postId);
 		rs = ps.executeQuery();
 		while (rs.next()) {
 			Comments comment = new Comments();
+			comment.setPostId(rs.getString("post_id"));
+			comment.setCommentId(rs.getString("comment_id"));
 			comment.setCommentText(rs.getString("comment_text"));
 			comment.setUserId(rs.getString("user_id"));
 			comment.setThumbsUp(rs.getString("thumbs_up"));

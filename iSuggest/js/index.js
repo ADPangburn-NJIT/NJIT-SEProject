@@ -75,8 +75,14 @@ function voteSuggestion(postId, vote, currentPage, category, group, popularity) 
 }
 
 function pleaseLogin() {
-	alert("Please Login to use this feature.");
-	document.getElementById("emailAddr").focus();
+	$( "#pleaseLoginDialog" ).dialog({ height: 200, width: 450, modal:true, 
+    	buttons: [
+    	          {
+    	        	  text: "Close",
+    	              click: function() { $(this).dialog("close"); }
+    	          }
+    	      ]		
+    });
 }
 
 function alreadyVoted(title) {
@@ -97,4 +103,10 @@ function showCategoriesMenu() {
 }
 function hideCategoriesMenu() {
 	document.getElementById("categoriesMenu").style.display="none";
+}
+
+function deleteComment(postId, commentId) {
+	document.deleteCommentForm.commentId.value = commentId;
+	document.deleteCommentForm.postId.value = postId;
+	document.deleteCommentForm.submit();
 }

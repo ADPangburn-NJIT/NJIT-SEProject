@@ -71,7 +71,7 @@
     <div class="header">
         <table>
             <tr>
-                <td><img src="images/isuggest_banner.png"></img></td>
+                <td><a href="index.jsp"><img src="images/isuggest_banner.png"></img></a></td>
                 <td class="loginCell">
                 <% if (user.getUserId() == null) { %>
                     <form name="loginForm" id="loginForm" method="post" action="login">

@@ -67,12 +67,13 @@
     <div class="header">
         <table>
             <tr>
-            	<td><img src="images/isuggest_banner.png"></img></td>
+            	<td><a href="index.jsp"><img src="images/isuggest_banner.png"></img></a></td>
                 <td class="loginCell">
                 <% if (user.getUserId() == null) { %>
                     <form name="loginForm" id="loginForm" method="post" action="login">
                         Email: <input type="text" name="emailAddr" id="emailAddr" size="13" maxlength="60" onclick="this.select()" />
                         Password: <input type="password" name="password" id="password" size="10" maxlength="32" /><br />
+                        <button type="button" onclick="home();">Home</button>
                         <button type="button" onclick="showRegistrationBox();">Register</button>
                         <button type="submit">Login</button>                   
                     </form>
@@ -130,7 +131,14 @@
         	%>
        		<table <% if (i % 2 == 1) { %>class="commentsOdd" <% } else { %> class="commentsEven" <% } %>>
         		<tr>
-        			<td><i><%= comment.getCommentText() %></i> <br /> by <%= comment.getUser().getFirstName() + " " + comment.getUser().getLastName() + " (" + comment.getUser().getRole() + ")" %></td>
+        			<td>
+        				<i><%= comment.getCommentText() %></i> <br /> by <%= comment.getUser().getFirstName() + " " + comment.getUser().getLastName() + " (" + comment.getUser().getRole() + ")" %>
+        			</td>
+        			<td style="text-align:right;">
+        				<% if ("99".equals(user.getUserType())) { %>
+        						<img class="ui-icon ui-icon-circle-close" onclick="deleteComment('<%= comment.getPostId() %>','<%= comment.getCommentId() %>');" title="Delete Comment"/>
+        				<% } %>
+        			</td>
         		</tr>
        		 </table>
         	<% } %>
@@ -238,6 +246,10 @@
 </div>
 <form name="sortByCategoriesForm" id="sortByCategoriesForm" method="post" action="index.jsp">
 	<input type="hidden" name="sortCategory" id="sortCategory" />
+</form>
+<form name="deleteCommentForm" id="deleteCommentForm" method="post" action="deleteComment">
+	<input type="hidden" name="commentId" id="commentId" />
+	<input type="hidden" name="postId" id="postId" />
 </form>
 </body>
 </html>

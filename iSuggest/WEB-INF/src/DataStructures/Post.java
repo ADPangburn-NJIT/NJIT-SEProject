@@ -146,7 +146,6 @@ public class Post {
 			query += " AND category='" + category + "'";
 		}
 		if (search != null && !"null".equals(search)) {
-			System.out.println(search);
 			query += " AND title LIKE " + "'%" + URLEncoder.encode(search, "UTF-8") + "%'";
 		}
 		if (group != null && !"null".equals(group) && !"All".equals(group)) {
@@ -163,7 +162,6 @@ public class Post {
 				query += " ORDER BY comments DESC"; 
 			}
 		}
-		System.out.println(query);
 		ps = con.prepareStatement(query);
 		rs = ps.executeQuery();
 		while (rs.next()) {

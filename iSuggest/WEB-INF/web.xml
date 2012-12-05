@@ -107,4 +107,15 @@
     <servlet-name>Vote Suggestion</servlet-name>
     <url-pattern>/voteSuggestion</url-pattern>
   </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>Delete Comment</servlet-name>
+    <description>Handles the deleting of comments.</description>
+    <servlet-class>Servlets.DeleteComment</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Delete Comment</servlet-name>
+    <url-pattern>/deleteComment</url-pattern>
+  </servlet-mapping>
 </web-app>

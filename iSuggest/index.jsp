@@ -59,10 +59,19 @@
  </head>
 <% 
 	int currentPage = 1;
-	String category = request.getParameter("sortCategory");
+	if (request.getParameter("sortCategory") != null) {
+		session.setAttribute("sortCategory", request.getParameter("sortCategory"));
+	}
+	if (request.getParameter("sortPopularity") != null) {
+		session.setAttribute("sortPopularity", request.getParameter("sortPopularity"));
+	}
+	if (request.getParameter("sortRole") != null) {
+		session.setAttribute("sortRole", request.getParameter("sortRole"));
+	}
+	String category = (String)session.getAttribute("sortCategory");
 	String search = request.getParameter("search");
-	String popularity = request.getParameter("sortPopularity");
-	String group = request.getParameter("sortRole");
+	String popularity = (String)session.getAttribute("sortPopularity");
+	String group = (String)session.getAttribute("sortRole");
 	ArrayList activePosts = new ArrayList();
 	activePosts = post.getActiveSuggestions(currentPage, category, group, popularity, search);
 	if (request.getParameter("page") != null) { 
@@ -76,7 +85,7 @@
     <div class="header">
         <table>
             <tr>
-            	<td><img src="images/isuggest_banner.png"></img></td>
+            	<td><a href="index.jsp"><img src="images/isuggest_banner.png"></img></a></td>
                 <td class="loginCell">
                 <% if (user.getUserId() == null) { %>
                     <form name="loginForm" id="loginForm" method="post" action="login">
@@ -122,7 +131,7 @@
 				        	<% for (int i = 0; i < VerificationUtils.getCategories().size(); i++) { 
 								Category categoryList = (Category)VerificationUtils.getCategories().get(i);
 							%>
-								<option value="<%= categoryList.getCategory() %>" <% if (categoryList.getCategory().equals(request.getParameter("sortCategory"))) { %> selected="selected" <% } %>><%= categoryList.getCategory() %></option>
+								<option value="<%= categoryList.getCategory() %>" <% if (categoryList.getCategory().equals(request.getParameter("sortCategory")) || categoryList.getCategory().equals((String)session.getAttribute("sortCategory"))) { %> selected="selected" <% } %>><%= categoryList.getCategory() %></option>
 							<% } %>
 				        </select>
 		       		</td>
@@ -132,15 +141,15 @@
 				        	<% for (int i = 0; i < VerificationUtils.getRoles().size(); i++) { 
 								Role roleList = (Role)VerificationUtils.getRoles().get(i);
 							%>
-								<option value="<%= roleList.getRoleId() %>" <% if (roleList.getRoleId().equals(request.getParameter("sortRole"))) { %> selected="selected" <% } %>><%= roleList.getRole() %></option>
+								<option value="<%= roleList.getRoleId() %>" <% if (roleList.getRoleId().equals(request.getParameter("sortRole")) || roleList.getRoleId().equals((String)session.getAttribute("sortRole"))) { %> selected="selected" <% } %>><%= roleList.getRole() %></option>
 							<% } %>
 				        </select>
 		       		</td>
 		       		<td>
 		       			<select id="sortPopularity" name="sortPopularity">
-			       			<option value="BestSuggestion" <% if (request.getParameter("sortPopularity") == null || "BestSuggestion".equals(request.getParameter("sortPopularity"))) { %> selected="selected" <% } %>>Best Suggestion</option>
-			       			<option value="WorstSuggestion" <% if ("WorstSuggestion".equals(request.getParameter("sortPopularity"))) { %> selected="selected" <% } %>>Worst Suggestion</option>
-		       				<option value="MostCommented" <% if ("MostCommented".equals(request.getParameter("sortPopularity"))) { %> selected="selected" <% } %>>Most Commented</option>
+			       			<option value="BestSuggestion" <% if (request.getParameter("sortPopularity") == null || "BestSuggestion".equals(request.getParameter("sortPopularity"))) { %> selected="selected" <% } %>>Most Likes</option>
+			       			<option value="WorstSuggestion" <% if ("WorstSuggestion".equals(request.getParameter("sortPopularity")) || "WorstSuggestion".equals((String)session.getAttribute("sortPopularity"))) { %> selected="selected" <% } %>>Most Dislikes</option>
+		       				<option value="MostCommented" <% if ("MostCommented".equals(request.getParameter("sortPopularity")) || "MostCommented".equals((String)session.getAttribute("sortPopularity"))) { %> selected="selected" <% } %>>Most Commented</option>
 		       			</select>
 		       		</td>
 		       	</tr>
@@ -213,11 +222,11 @@
 	<form name="registrationForm" id="registrationForm" method="post" action="register">
 		<table id="registrationTable">
 			<tr>
-				<td>E-mail</td>
+				<td>E-mail*</td>
 				<td><input type="text" name="emailAddr" id="emailAddr" size="30" maxlength="60" /></td>
 			</tr>
 			<tr>
-				<td>Password</td>
+				<td>Password*</td>
 				<td><input type="text" name="password" id="password" size="30" maxlength="20" /></td>
 			</tr>
 			<tr>
@@ -377,7 +386,9 @@
 			</tr>
 		<% } %>
 	</table>
-	
+</div>
+<div id="pleaseLoginDialog" style="display:none;" title="Please Login">
+	<p>Please Login to use this feature.</p>
 </div>
 </body>
 </html>
